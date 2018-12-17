@@ -1,0 +1,19 @@
+{
+  "name": "3jsnatureofcode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "docker-build": "docker build -t 3jsnoc .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve":"http-server",
+    "dev-server": "docker run -p 9000:80 -v /home/marty/tech/projects/3jsnatureofcode/noc/:/var/www/html/ --name  noc-dev --rm  3jsnoc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.11.1",
+    "three": "^0.99.0"
+  }
+}
