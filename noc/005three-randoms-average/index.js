@@ -1,13 +1,13 @@
 let camera, scene, renderer, geometry, material, mesh;
 let framerate = 60;
 const boxes = [];
-for(let i = 0; i < 20; i++) {
+for(let i = 0; i < 100; i++) {
   boxes.push({ cube: {}, count: .1});
 }
 
 function setup() {
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 400 );
-    camera.position.z = 200;
+    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 4000 );
+    camera.position.z = 800;
     //camera.position.y = 80;
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer( { antialias: true } );
@@ -21,7 +21,7 @@ function setup() {
     boxes.forEach(
       (box, i) => {
         box.cube = new THREE.Mesh( geometry, material );
-        box.cube.position.set((i*20 - 200), 0, 0);
+        box.cube.position.set((i*20 - 1000), 0, 0);
         scene.add( box.cube );
       }
     );
