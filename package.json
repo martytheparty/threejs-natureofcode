@@ -6,8 +6,8 @@
   "scripts": {
     "docker-build": "docker build -t 3jsnoc .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve":"http-server",
-    "dev-server": "docker run -p 9000:80 -v /home/marty/tech/projects/3jsnatureofcode/noc/:/var/www/html/ --name  noc-dev --rm  3jsnoc"
+    "serve": "http-server",
+    "dev-server": "docker run -p 9000:80 -v /home/marty/tech/projects/threejs-natureofcode/noc/:/var/www/html/ --name  noc-dev --rm  3jsnoc"
   },
   "keywords": [],
   "author": "",
@@ -15,5 +15,8 @@
   "devDependencies": {
     "http-server": "^0.11.1",
     "three": "^0.99.0"
+  },
+  "dependencies": {
+    "perlin-simplex": "0.0.3"
   }
 }
