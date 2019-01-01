@@ -16,7 +16,7 @@ ball1.constraints = new MVector(200, 150, 150);
 let balls = [];
 balls.push(ball);
 balls.push(ball1);
-balls.push(ball2);
+//balls.push(ball2);
 
 
 function setup() {
