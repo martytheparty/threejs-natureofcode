@@ -6,4 +6,20 @@ class MBall {
     this.constraints = false;
   }
 
+  applyConstraintsToVelocity() {
+    if (this.constraints) {
+      if (this.position.x > this.constraints.x/2 || this.position.x < -this.constraints.x/2) {
+        this.velocity.x = this.velocity.x*-1;
+      }
+
+      if (this.position.y > this.constraints.y/2 || this.position.y < -this.constraints.y/2) {
+        this.velocity.y = this.velocity.y*-1;
+      }
+
+      if (this.position.z > this.constraints.z/2 || this.position.z < -this.constraints.z/2) {
+        this.velocity.z = this.velocity.z*-1;
+      }
+    }
+  }
+
 }
