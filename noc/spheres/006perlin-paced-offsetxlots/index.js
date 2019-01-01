@@ -4,20 +4,15 @@ let meshes = [];
 let positions = [];
 let count = 1;
 
-
 function setup() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 4000 );
     camera.position.z = 200;
-    //camera.position.y = 80;
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
-    /* Add A Sphere To To Canvas */
     geometry = new THREE.SphereGeometry( 1, 32, 32 );
-    //geometry = new THREE.BoxGeometry( 10, 10, 10 );
     material = new THREE.MeshNormalMaterial();
-
 
     for(let i = 0; i < count; i++) {
       meshes[i] = new THREE.Mesh( geometry, material );
@@ -52,7 +47,6 @@ const setNextRandom = () => {
     }
   );
 
-  //return val;
 };
 
 const updateSceneData = () => {
@@ -62,16 +56,11 @@ const updateSceneData = () => {
 let sceneUpdateInterval = setInterval(updateSceneData, 1000/framerate);
 
 setInterval(() => {
-
-//  if (meshes.length < 50) {
     meshes[meshes.length] = new THREE.Mesh( geometry, material );
     scene.add( meshes[meshes.length - 1] );
     meshes[meshes.length - 1].perlinXOffset = false;
     meshes[meshes.length - 1].perlinYOffset = false;
     meshes[meshes.length - 1].perlinZOffset = false;
-//  }
-
-
 }, 50);
 
 const updateFramerate = (newFrameRate) => {
