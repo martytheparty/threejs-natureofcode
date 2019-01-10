@@ -37,7 +37,7 @@ function setup() {
     );
 
     line = new THREE.Line( geometry, material );
-    console.log(geometry);
+    //console.log(geometry);
     scene.add( line );
     draw();
 }
@@ -68,7 +68,7 @@ const updateSceneData = () => {
   //   console.log(err);
   // }
   try {
-    console.log('remove lin');
+  //  console.log('remove lin');
     scene.remove(line);
     //geometry.vertices[1] = new THREE.Vector3( -lineEndPosition.x, -lineEndPosition.y, -lineEndPosition.z );
     //console.log(geometry);
@@ -83,7 +83,7 @@ const updateSceneData = () => {
     );
 
     line = new THREE.Line( geometry, material );
-    console.log(geometry);
+    //console.log(geometry);
     scene.add( line );
 
   } catch(err) {
