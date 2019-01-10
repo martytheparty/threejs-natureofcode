@@ -13,18 +13,6 @@ function setup() {
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
-    // geometry = new THREE.SphereGeometry( ball.radius, 32, 32 );
-    // material = new THREE.MeshNormalMaterial();
-    // mesh = new THREE.Mesh( geometry, material );
-    // mesh.position.set(ball.position);
-    // scene.add( mesh );
-    //
-    // var geometry = new THREE.BoxGeometry( ball.constraints.x, ball.constraints.y, ball.constraints.z );
-    // var wireframe = new THREE.WireframeGeometry( geometry );
-    // var line = new THREE.LineSegments( wireframe );
-    // line.material.depthTest = false;
-    // line.material.transparent = true;
-    // scene.add( line );
 
     var material = new THREE.LineBasicMaterial({
     	color: 0x0000ff
@@ -44,34 +32,8 @@ function setup() {
 
 const updateSceneData = () => {
 
-  // try {
-  //   ball.position.add(ball.velocity);
-  //   if (ball.position.x > 100) {
-  //     ball.velocity.x = ball.velocity.x*-1;
-  //   } else if (ball.position.x < -100) {
-  //     ball.velocity.x = ball.velocity.x*-1;
-  //   }
-  //
-  //   if (ball.position.y > 75) {
-  //     ball.velocity.y = ball.velocity.y*-1;
-  //   } else if (spherePosition.y < -75) {
-  //     ball.velocity.y = ball.velocity.y*-1;
-  //   }
-  //
-  //   if (ball.position.z > 75) {
-  //     ball.velocity.z = ball.velocity.z*-1;
-  //   } else if (spherePosition.z < -75) {
-  //     ball.velocity.z = ball.velocity.z*-1;
-  //   }
-  //
-  // } catch (err) {
-  //   console.log(err);
-  // }
   try {
-  //  console.log('remove lin');
     scene.remove(line);
-    //geometry.vertices[1] = new THREE.Vector3( -lineEndPosition.x, -lineEndPosition.y, -lineEndPosition.z );
-    //console.log(geometry);
 
     geometry = new THREE.Geometry();
     lineEndPosition.x = -1*lineEndPosition.x;
@@ -83,7 +45,6 @@ const updateSceneData = () => {
     );
 
     line = new THREE.Line( geometry, material );
-    //console.log(geometry);
     scene.add( line );
 
   } catch(err) {
@@ -102,10 +63,6 @@ const updateFramerate = (newFrameRate) => {
 }
 
 function draw() {
-    /*
-    This function call called on every browser render (requestAnimationFrame) event.
-    */
-    // mesh.position.set(ball.position.x, ball.position.y, ball.position.z);
     renderer.render( scene, camera );
     requestAnimationFrame( draw );
 }
