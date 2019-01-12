@@ -10,7 +10,7 @@ class MVector {
     this.y = this.y + vector.y;
     this.z = this.z + vector.z;
   }
-  substract(vector) {
+  subtract(vector) {
     this.x = this.x - vector.x;
     this.y = this.y - vector.y;
     this.z = this.z - vector.z;
