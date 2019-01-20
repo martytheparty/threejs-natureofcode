@@ -53,8 +53,37 @@ class MVector {
     uy = uy*(y%2==0 ? 1 : -1);
     uz = uz*(z%2==0 ? 1 : -1);
 
+    this.x = ux;
+    this.y = uy;
+    this.z = uz;
 
+    return (new MVector(ux, uy, uz));
 
+  }
+
+  normalDistribution() {
+    function getRandom() {
+      let random = Math.floor(Math.random() * 10);
+      random = random * (random%2==0 ? 1 : -1);
+      return random;
+    }
+
+    function getNormalDistribution() {
+      let norm = 0;
+      for (let i = 0; i < 6; i++) {
+        norm = norm + getRandom();
+      }
+
+      return norm/6;
+    }
+
+    let x = getNormalDistribution();
+    let y = getNormalDistribution();
+    let z = getNormalDistribution();
+
+    let ux = x/Math.sqrt(x*x + y*y + z*z);
+    let uy = y/Math.sqrt(x*x + y*y + z*z);
+    let uz = z/Math.sqrt(x*x + y*y + z*z);
 
     this.x = ux;
     this.y = uy;
@@ -63,4 +92,5 @@ class MVector {
     return (new MVector(ux, uy, uz));
 
   }
+
 }
