@@ -93,4 +93,32 @@ class MVector {
 
   }
 
+  perlinDistribution(i, count) {
+
+
+
+
+
+
+    function getPerlinNoise(pos) {
+      return  Simplex.noise(pos, count);
+    }
+
+    let x = getPerlinNoise(10*i + 1);
+    let y = getPerlinNoise(10*i + 2);
+    let z = getPerlinNoise(10*i + 3);
+
+    let ux = x/Math.sqrt(x*x + y*y + z*z);
+    let uy = y/Math.sqrt(x*x + y*y + z*z);
+    let uz = z/Math.sqrt(x*x + y*y + z*z);
+
+    this.x = ux;
+    this.y = uy;
+    this.z = uz;
+
+    return (new MVector(ux, uy, uz));
+
+  }
+
+
 }

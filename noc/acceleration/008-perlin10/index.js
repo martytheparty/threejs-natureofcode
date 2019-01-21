@@ -82,18 +82,19 @@ function setup() {
 
     draw();
 }
-
+let currentCount = 0;
 const updateSceneData = () => {
 
   try {
     balls.forEach(
-      (ball) => {
-        ball.acceleration.random();
+      (ball,i) => {
+        ball.acceleration.perlinDistribution(i, currentCount);
         ball.velocity.add(ball.acceleration);
         ball.position.add(ball.velocity);
         ball.applyConstraintsToVelocity();
       }
     );
+    currentCount++;
 
   } catch (err) {
     console.log(err);

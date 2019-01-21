@@ -88,7 +88,7 @@ const updateSceneData = () => {
   try {
     balls.forEach(
       (ball) => {
-        ball.acceleration.normalDistribution().multiply(.001);
+        ball.acceleration.normalDistribution();
         ball.velocity.add(ball.acceleration);
         ball.position.add(ball.velocity);
         ball.applyConstraintsToVelocity();
