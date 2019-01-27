@@ -18,7 +18,7 @@ ball.constraints = new MVector(200, 150, 150);
 
 function setup() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 4000 );
-    camera.position.z = 200;
+    camera.position.z = 300;
     camera.position.y = 0;
     scene = new THREE.Scene();
     renderer = new THREE.WebGLRenderer( { antialias: true } );
