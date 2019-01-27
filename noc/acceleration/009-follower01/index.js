@@ -14,7 +14,7 @@ follower.acceleration = followerAcceleration;
 
 ball.velocity = sphereVelocity;
 ball.acceleration = sphereAcceleration;
-ball.constraints = new MVector(200, 150, 150);
+ball.constraints = new MVector(150, 150, 150);
 
 function setup() {
     camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 4000 );
