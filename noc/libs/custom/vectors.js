@@ -28,7 +28,10 @@ class MVector {
     return localVec;
   }
   normalize() {
-    const totalLength = Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    let totalLength = Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    if (totalLength === 0) {
+      totalLength = 1;
+    }
     const localVec = new MVector(this.x/totalLength, this.y/totalLength, this.z/totalLength);
 
     this.x = this.x/totalLength;
