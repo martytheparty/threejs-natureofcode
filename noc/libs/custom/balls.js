@@ -7,6 +7,10 @@ class MBall {
     this.constraints = false;
   }
 
+  applyForce(force) {
+    this.acceleration.add(force);
+  }
+
   applyConstraintsToVelocity() {
     if (this.constraints) {
 
