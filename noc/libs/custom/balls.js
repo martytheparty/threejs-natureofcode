@@ -5,9 +5,16 @@ class MBall {
     this.velocity = new MVector(0,0,0);
     this.acceleration = new MVector(0,0,0);
     this.constraints = false;
+    this.mass = 1;
   }
 
   applyForce(force) {
+    let lForce = force.clone();
+    this.acceleration.add(lForce.multiply(1/this.mass));
+  }
+
+  applyGravity(force) {
+    /* special case of force that ignores mass */
     this.acceleration.add(force);
   }
 
