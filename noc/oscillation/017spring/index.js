@@ -19,6 +19,14 @@ function setup() {
       adding = false;
     }
 
+    renderer.domElement.onpointerdown =  () => {
+      adding = true;
+    }
+
+    renderer.domElement.onpointerup =  () => {
+      adding = false;
+    }
+
     /* Add A Sphere To To Canvas */
     geometry = new THREE.SphereGeometry( radius, 32, 32 );
     //geometry = new THREE.BoxGeometry( 10, 10, 10 );
