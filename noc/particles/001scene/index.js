@@ -37,7 +37,7 @@ const updateSceneData = () => {
   //console.log(ball.acceleration);
   ball.velocity.add(ball.acceleration);
   ball.ttl--;
-  if (ball.ttl < 0) {
+  if (ball.isDead()) {
     // set velocity and accelleratin to 0
     ball.acceleration = new MVector(0,0,0);
     ball.velocity = new MVector(0,0,0);
@@ -88,10 +88,10 @@ function draw() {
     /*
     This function call called on every browser render (requestAnimationFrame) event.
     */
-    if (ball.ttl >= 0) {
-      mesh.position.set(ball.position.x, ball.position.y, ball.position.z);
-    } else {
+    if (ball.isDead()) {
       scene.remove(mesh);
+    } else {
+      mesh.position.set(ball.position.x, ball.position.y, ball.position.z);
     }
     renderer.render( scene, camera );
     requestAnimationFrame( draw );

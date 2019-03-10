@@ -9,6 +9,14 @@ class MParticle {
     this.ttl = 1000;
   }
 
+  isDead() {
+    let dead = false;
+    if (this.ttl < 0) {
+      dead = true;
+    }
+    return dead;
+  }
+
   applyForce(force) {
     let lForce = force.clone();
     this.acceleration.add(lForce.multiply(1/this.mass));
