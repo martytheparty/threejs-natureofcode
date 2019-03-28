@@ -1,10 +1,18 @@
 class MParticleSystem {
   constructor() {
     this.particles = [];
+    this.constraints;
+  }
+
+  setConstraints(constraints) {
+    this.constraints = constraints;
   }
 
   addParticle(radius, position) {
       let ball = new MParticle(radius, position);
+      if (this.constraints) {
+        ball.constraints = this.constraints;
+      }
       this.particles.push(ball);
       return ball;
   }
