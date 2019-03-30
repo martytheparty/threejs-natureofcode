@@ -2,6 +2,7 @@ class MParticleSystem {
   constructor() {
     this.particles = [];
     this.constraints;
+    this.origin = new MVector(0, 0, 0);
   }
 
   setConstraints(constraints) {
