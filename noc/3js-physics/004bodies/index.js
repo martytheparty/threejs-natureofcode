@@ -37,23 +37,23 @@ function setup() {
     for(let i = 0; i < meshCount; i++) {
       const mesh = new THREE.Mesh( geometry, material );
       if (i === 0) {
-        mesh.position.set(-1.5,1.5,0);
+        mesh.position.set(-1.25,1.25,0);
       } else if (i === 1) {
-        mesh.position.set(0,1.5,0);
+        mesh.position.set(0,1.25,0);
       } else if (i === 2) {
-        mesh.position.set(1.5,1.5,0);
+        mesh.position.set(1.25,1.25,0);
       } else if (i === 3) {
-        mesh.position.set(-1.5,0,0);
+        mesh.position.set(-1.25,0,0);
       } else if (i === 4) {
         mesh.position.set(0,0,0);
       } else if (i === 5) {
-        mesh.position.set(1.5,0,0);
+        mesh.position.set(1.25,0,0);
       } else if (i === 6) {
-        mesh.position.set(-1.5,-1.5,0);
+        mesh.position.set(-1.25,-1.25,0);
       } else if (i === 7) {
-        mesh.position.set(0,-1.5,0);
+        mesh.position.set(0,-1.25,0);
       } else if (i === 8) {
-        mesh.position.set(1.5,-1.5,0);
+        mesh.position.set(1.25,-1.25,0);
       }
       scene.add( mesh );
       meshes.push(mesh);
