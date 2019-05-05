@@ -1,8 +1,10 @@
 let world, body, shape, timeStep=1/60,
 camera, scene, renderer, geometry, material, mesh;
 let framerate = 60;
-let cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
+//let cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
 let mass = 5, radius = .2;
+let spheres = [];
+let sphere = {};
 
 function setupCamera() {
   camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 200 );
@@ -31,14 +33,47 @@ function addGround() {
   let groundBody = new CANNON.Body({ mass: 0, shape: groundShape });
   groundBody.quaternion.setFromAxisAngle( new CANNON.Vec3(1,1,0), Math.PI/12 );
   world.add(groundBody);
+
+  /* 3JS Ground Shape */
+ geometry = new THREE.PlaneGeometry( 360, 360 );
+ material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+ plane = new THREE.Mesh( geometry, material );
+ scene.add( plane );
+ plane.rotation.x = Math.PI/12;
+ plane.rotation.y = Math.PI/12;
+
 }
 
 function addSphere() {
+
+  if (spheres.length > 500) {
+    spheres.shift();
+  }
+
   let sphereShape = new CANNON.Sphere(radius); // Step 1
   let sphereBody = new CANNON.Body({mass: 15, shape: sphereShape}); // Step 2
   let yPos = Math.random() * 20;
   sphereBody.position.set(-10,yPos,10);
   world.add(sphereBody); // Step 3
+
+  /* Add A Sphere To To Canvas */
+  geometry = new THREE.SphereGeometry( radius, 32, 32 );
+  //geometry = new THREE.BoxGeometry( 10, 10, 10 );
+  material = new THREE.MeshNormalMaterial();
+  mesh = new THREE.Mesh( geometry, material );
+  mesh.position.set(-10, yPos, 10);
+  scene.add( mesh );
+
+  sphere.mesh = mesh;
+  sphere.physics = sphereBody;
+
+  spheres.push({physics: sphereBody, mesh: mesh});
+
+
+}
+
+function addBox(dimensions, position) {
+
 }
 
 function addBoxes(){
@@ -57,15 +92,44 @@ function addBoxes(){
      body1.position.set(0,0,0);
      world.addBody(body1);
 
+     /* Add A Sphere To To Canvas */
+
+     geometry = new THREE.BoxGeometry( 2, 2, 2);
+    // geometry = new THREE.SphereGeometry( radius, 32, 32 );
+     //geometry = new THREE.BoxGeometry( 10, 10, 10 );
+     material = new THREE.MeshNormalMaterial();
+     mesh = new THREE.Mesh( geometry, material );
+     mesh.position.set(0, 0, 0);
+     scene.add( mesh );
+
+
      // var body2 = new CANNON.Body({ mass: 0 });
      // body2.addShape(shape1);
      // body2.position.set(5,40,0);
      // world.addBody(body2);
-     //
-     // var body3 = new CANNON.Body({ mass: 0 });
-     // body3.addShape(shape2);
-     // body3.position.set(0,0,0);
-     // world.addBody(body3);
+
+    //  let geometry1 = new THREE.BoxGeometry( 1, 40, 3);
+    // // geometry = new THREE.SphereGeometry( radius, 32, 32 );
+    //  //geometry = new THREE.BoxGeometry( 10, 10, 10 );
+    //  material = new THREE.MeshNormalMaterial();
+    //  let mesh1 = new THREE.Mesh( geometry1, material );
+    //  mesh1.position.set(5,40,0);
+    //  scene.add( mesh1 );
+    //
+    //
+    //
+    //  var body3 = new CANNON.Body({ mass: 0 });
+    //  body3.addShape(shape2);
+    //  body3.position.set(0,0,0);
+    //  world.addBody(body3);
+    //
+    //  let geometry2 = new THREE.BoxGeometry( 1, 40, 3);
+    // // geometry = new THREE.SphereGeometry( radius, 32, 32 );
+    //  //geometry = new THREE.BoxGeometry( 10, 10, 10 );
+    //  material = new THREE.MeshNormalMaterial();
+    //  let mesh2 = new THREE.Mesh( geometry2, material );
+    //  mesh2.position.set(0,0,0);
+    //  scene.add( mesh2 );
 
 
      // var bodya = new CANNON.Body({ mass: 0 });
@@ -108,7 +172,7 @@ function setup() {
   addGround();
   addSphere();
   addBoxes();
-  cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
+//  cannonDebugRenderer = new THREE.CannonDebugRenderer( scene, world );
   draw();
 }
 
@@ -128,7 +192,15 @@ function updatePhysics() {
 
 function draw() {
   renderer.render( scene, camera );
-  cannonDebugRenderer.update();
+  // cannonDebugRenderer.update();
+    spheres.forEach(
+      (sphere) => {
+          //console.log(sphere.physics.position.x);
+          sphere.mesh.position.set(sphere.physics.position.x, sphere.physics.position.y, sphere.physics.position.z);
+
+      }
+    );
+
   requestAnimationFrame( draw );
 }
 
@@ -140,4 +212,4 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 sceneUpdateInterval = setInterval(updateSceneData, 1000/framerate);
-ballInterval = setInterval(addSphere, 50);
+ballInterval = setInterval(addSphere, 500);
