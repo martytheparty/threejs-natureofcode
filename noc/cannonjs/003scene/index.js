@@ -200,14 +200,14 @@ document.addEventListener("DOMContentLoaded", () => {
           toggle2 = 1;
         }
 
-        let opt = {};
-        opt.position = {x: Math.sin(i*.3)*j*5, y: 3*j, z: Math.cos(i*.3)*j*5};
-        opt.rotation = {x: 1*Math.PI/8, y: 1*Math.PI/8, z: -1*Math.PI/4};
-        opt.dimensions = {width: 1, height: .1, depth: 1};
-        opt.scene = scene2;
-        opt.world = world2;
-        opt.debugWorld = world;
-        fixedCuboid(opt);
+        // let opt = {};
+        // opt.position = {x: Math.sin(i*.3)*j*5, y: 3*j, z: Math.cos(i*.3)*j*5};
+        // opt.rotation = {x: 1*Math.PI/8, y: 1*Math.PI/8, z: -1*Math.PI/4};
+        // opt.dimensions = {width: 1, height: .1, depth: 1};
+        // opt.scene = scene2;
+        // opt.world = world2;
+        // opt.debugWorld = world;
+        // fixedCuboid(opt);
 
       }
     }
