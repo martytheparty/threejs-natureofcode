@@ -141,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
   options.debugWorld = world;
 
   ground = fixedCuboid(options);
+  scene2.add( ground.three );
 
 
   let options1 = {};
@@ -152,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
   options1.debugWorld = world;
 
   ground1 = fixedCuboid(options1);
+  scene2.add( ground1.three );
 
   let options2 = {};
   options2.position = {x: 0, y: 8, z: 0};
@@ -162,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
   options2.debugWorld = world;
 
   ground2 = fixedCuboid(options2);
+  scene2.add( ground2.three );
 
   let toggle1 = 1;
   let toggle2 = 1;
@@ -207,7 +210,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // opt.scene = scene2;
         // opt.world = world2;
         // opt.debugWorld = world;
-        // fixedCuboid(opt);
+        // let cuboidDescriptor = fixedCuboid(opt);
+        // scene2.add(cuboidDescriptor.three);
 
       }
     }

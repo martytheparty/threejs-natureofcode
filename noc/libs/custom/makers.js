@@ -54,7 +54,11 @@ const fixedCuboid = (descriptor) => {
   cannonBody.addShape(cannonShape);
   cannonBody.position.set(descriptor.position.x,descriptor.position.y,descriptor.position.z);
   cannonBody.quaternion.setFromEuler(descriptor.rotation.x, descriptor.rotation.y, descriptor.rotation.z);
-  descriptor.debugWorld.addBody(cannonBody);
+
+  if (descriptor.debugWorld) {
+    descriptor.debugWorld.addBody(cannonBody);
+  }
+
 
   let threeShape = new THREE.BoxGeometry( descriptor.dimensions.width*2,descriptor.dimensions.height*2,descriptor.dimensions.depth*2 );
   let mat = new THREE.MeshNormalMaterial();
@@ -64,7 +68,7 @@ const fixedCuboid = (descriptor) => {
   threeMesh.rotation.y = descriptor.rotation.y;
   threeMesh.rotation.z = descriptor.rotation.z;
 
-  scene2.add( threeMesh );
+  //scene2.add( threeMesh );
 
 
   return { cannon: cannonShape, three: threeMesh };
