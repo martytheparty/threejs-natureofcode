@@ -12,16 +12,17 @@ let ground;
 let fallingBoxes = [];
 let fallingSpheres = [];
 
+let topPlatform = {};
+
 
 const setupPhysics = () => {
   world = new CANNON.World();
-  world.gravity.set(0,-10,0);
+  world.gravity.set(0,-20,0);
   world.broadphase = new CANNON.NaiveBroadphase();
   world.solver.iterations = 10;
 };
 
 const updateSceneData = () => {
-  //addFallingBox({x: 0,y: 15, z: 0}, {width: .3, height: .3, depth: .3});
   updatePhysics();
 }
 
@@ -32,37 +33,75 @@ const updateFramerate = (newFrameRate) => {
 }
 
 function updatePhysics() {
-  //console.log('update physics...');
-  //console.log(world);
+
   if (world) {
     world.step(1/60);
+  }
+
+}
+
+function uiSychronization() {
+  if (world) {
     fallingBoxes.forEach(
       (box) => {
-        //console.log(box.cannon.position.y);
-        //box.three.position
-        //console.log(box.three.position.y);
         box.three.position.x = box.cannon.position.x;
         box.three.position.y = box.cannon.position.y;
         box.three.position.z = box.cannon.position.z;
+
+        box.three.quaternion.x = box.cannon.quaternion.x;
+        box.three.quaternion.y = box.cannon.quaternion.y;
+        box.three.quaternion.z = box.cannon.quaternion.z;
+        box.three.quaternion.w = box.cannon.quaternion.w;
+
       }
     );
 
     fallingSpheres.forEach(
       (sphere) => {
-        //console.log(box.cannon.position.y);
-        //box.three.position
-        //console.log(box.three.position.y);
         sphere.three.position.x = sphere.cannon.position.x;
         sphere.three.position.y = sphere.cannon.position.y;
         sphere.three.position.z = sphere.cannon.position.z;
       }
     );
 
-  }
+    // let x = topPlatform.cannon.angularVelocity.x + 10;
+    // let y = topPlatform.cannon.angularVelocity.y + 10;
+    // let z = topPlatform.cannon.angularVelocity.z + 10;
 
+    // topPlatform.cannon.angularVelocity.set(x,y,z);
+
+    //topPlatform.cannon.angularDamping = 0.5;
+
+    // topPlatform.cannon.rotation.x += .01;
+    // topPlatform.cannon.rotation.y += .01;
+    // topPlatform.cannon.rotation.z += .01;
+
+
+    xRot = xRot + 0;
+    yRot = yRot + 0;
+    zRot = zRot + 0;
+
+    topPlatform.cannon.quaternion.setFromEuler( xRot, yRot, zRot);
+
+    topPlatform.three.quaternion.x = topPlatform.cannon.quaternion.x;
+    topPlatform.three.quaternion.y = topPlatform.cannon.quaternion.y;
+    topPlatform.three.quaternion.z = topPlatform.cannon.quaternion.z;
+
+
+
+    //debugger
+    //console.log(`${fallingBoxes.length} - ${fallingSpheres.length}`);
+
+
+
+
+  }
 
 }
 
+let xRot = 2*Math.PI/5;
+let yRot = 0;
+let zRot = 0;
 
 function draw() {
 //  camera.lookAt(new THREE.Vector3(0,0,0));
@@ -105,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function addFallingSphere(intialPosition, initialDimensions, mass) {
+  let maxCount = 200;
   let options = {};
   options.position = intialPosition;
   options.rotation = {x: -1*Math.PI/8, y: 0, z: Math.PI/8};
@@ -116,11 +156,21 @@ function addFallingSphere(intialPosition, initialDimensions, mass) {
 
   let sphere = dynamicSphere(options);
   scene.add( sphere.three );
-  fallingSpheres.push(sphere);
+  fallingSpheres.unshift(sphere);
+
+  if (fallingSpheres.length > maxCount) {
+    for (var i = (fallingSpheres.length - 1); i > maxCount; i-- ) {
+      //console.log(fallingSpheres[i]);
+      world.remove(fallingSpheres[i].cannon);
+      scene.remove(fallingSpheres[i].three);
+      fallingSpheres.pop();
+    }
+  }
 
 }
 
 function addFallingBox(intialPosition, initialDimensions, mass) {
+  let maxCount = 200;
   let options = {};
   options.position = intialPosition;
   options.rotation = {x: -1*Math.PI/8, y: 0, z: Math.PI/8};
@@ -132,31 +182,24 @@ function addFallingBox(intialPosition, initialDimensions, mass) {
 
   let box = dynamicCuboid(options);
   scene.add( box.three );
-  fallingBoxes.push(box);
+  fallingBoxes.unshift(box);
 
+  if (fallingBoxes.length > maxCount) {
+    for (var i = (fallingBoxes.length - 1); i > maxCount; i-- ) {
+      //console.log(fallingSpheres[i]);
+      world.remove(fallingBoxes[i].cannon);
+      scene.remove(fallingBoxes[i].three);
+      fallingBoxes.pop();
+    }
+  }
 }
 
 function addFins() {
   let toggle1 = 1;
   let toggle2 = 1;
-  for(let i = 0; i < 22; i++) {
-    // let opt = {};
-    // opt.position = {x: 0, y: i, z: i};
-    // opt.rotation = {x: 0, y: 0, z: 0};
-    // opt.dimensions = {width: 1, height: .1, depth: 1};
-    // opt.scene = scene2;
-    // opt.world = world2;
-    // opt.debugWorld = world;
-    // fixedCuboid(opt);
+  for(let i = 0; i < 21; i++) {
+
     for(let j = 0; j < 4; j++) {
-      // let opt = {};
-      // opt.position = {x: 0, y: i, z: j};
-      // opt.rotation = {x: 0, y: 0, z: 0};
-      // opt.dimensions = {width: 1, height: .1, depth: 1};
-      // opt.scene = scene2;
-      // opt.world = world2;
-      // opt.debugWorld = world;
-      // fixedCuboid(opt);
       for(let k = 0; k < 5; k++) {
 
 
@@ -176,8 +219,8 @@ function addFins() {
 
         let opt = {};
         opt.position = {x: Math.sin(i*.3)*j*5, y: 3*j, z: Math.cos(i*.3)*j*5};
-        opt.rotation = {x: 1*Math.PI/8, y: 1*Math.PI/8, z: -1*Math.PI/4};
-        opt.dimensions = {width: 1, height: .1, depth: 1};
+        opt.rotation = {x: 1*Math.PI/4, y: 1*Math.PI/4, z: -1*Math.PI/4};
+        opt.dimensions = {width: 2, height: .1, depth: 2};
         opt.scene = scene;
         opt.world = world;
         opt.debugWorld = false;
@@ -197,22 +240,23 @@ function addPlatforms() {
 
 function addTopPlatform() {
   let options = {};
-  options.position = {x: 0, y: 8, z: 0};
-  options.rotation = {x: Math.PI/4, y: 0, z: 0};
-  options.dimensions = {width: 2, height: .5, depth: .1};
+  options.position = {x: 0, y: -5, z: 0};
+  options.rotation = {x: 2*Math.PI/5, y: 0, z: 0};
+  options.dimensions = {width: 8, height: .1, depth: 8};
   options.scene = scene;
   options.world = world;
   options.debugWorld = false;
 
-  platform = fixedCuboid(options);
-  scene.add( platform.three );
+  topPlatform = fixedCuboid(options);
+
+  scene.add( topPlatform.three );
 
 }
 
 function addMiddlePlatform() {
   let options = {};
-  options.position = {x: 0, y: 5, z: 0};
-  options.rotation = {x: Math.PI/8, y: 0, z: Math.PI/8};
+  options.position = {x: 0, y: -10, z: 0};
+  options.rotation = {x: 1*Math.PI/3, y: 0, z: -1*Math.PI/32};
   options.dimensions = {width: 3, height: .1, depth: 3};
   options.scene = scene;
   options.world = world;
@@ -225,9 +269,9 @@ function addMiddlePlatform() {
 
 function addBasePlatform() {
   let options = {};
-  options.position = {x: 0, y: -5, z: 0};
-  options.rotation = {x: -1*Math.PI/16, y: 0, z: 1*Math.PI/32};
-  options.dimensions = {width: 4, height: .1, depth: 8};
+  options.position = {x: 0, y: -15, z: 0};
+  options.rotation = {x: -1*Math.PI/3, y: 0, z: 1*Math.PI/32};
+  options.dimensions = {width: 12, height: .1, depth: 12};
   options.scene = scene;
   options.world = world;
   options.debugWorld = false;
@@ -240,8 +284,9 @@ function newBoxes() {
   //  opt.position = {x: Math.sin(i*.3)*j*5, y: 3*j, z: Math.cos(i*.3)*j*5};
 
   addFallingBox({x: (Math.floor(Math.random() * 20) - 10),y: (Math.floor(Math.random() * 20) + 10), z: (Math.floor(Math.random() * 20) - 10)}, {width: .3, height: .3, depth: .3}, 1);
-  addFallingSphere({x: 0,y: 25, z: 0}, {radius: .2}, 10);
+  addFallingSphere({x: (Math.floor(Math.random() * 20) - 10),y: (Math.floor(Math.random() * 25) + 10), z: (Math.floor(Math.random() * 20) - 10)}, {radius: .2}, 10);
 }
 
 sceneUpdateInterval = setInterval(updateSceneData, 1000/framerate);
-setInterval(newBoxes, 1000);
+uiUpdateInterval = setInterval(uiSychronization, 30);
+setInterval(newBoxes, 30);
