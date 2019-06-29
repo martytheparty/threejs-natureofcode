@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Basic 3js Scene</title>
+  <script src="../../libs/three/three.js"></script>
+  <script src="../../libs/three/OrbitControls.js"></script>
+  <script src="../../libs/cannon/cannon.js"></script>
+  <script src="../../libs/custom/makers.js"></script>
+
+
+  <script src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="../../basic.css">
+</head>
+<body>
+<input
+  style="position: fixed;
+  height: 50px;
+  bottom: 0;
+  width: 100%;
+  border: 3px solid #73AD21"
+  type="range"
+  min="-50"
+  max="50"
+  value="0"
+  onchange="changeAngle(this.value)">
+</body>
+</html>
