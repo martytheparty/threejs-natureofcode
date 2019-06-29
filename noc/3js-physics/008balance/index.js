@@ -172,7 +172,7 @@ function changeAngle(position) {
     startPlatformPosition = platform.cannon.quaternion.x;
   }
 
-  platform.cannon.quaternion.x = startPlatformPosition + position/100;
+  platform.cannon.quaternion.x = startPlatformPosition + position/1000;
   addFallingSphere({x: 0,y: 19, z: 0}, {radius: 1}, 1);
   // console.log(position);
   // console.log(fallingSpheres[0].three.position.z);
