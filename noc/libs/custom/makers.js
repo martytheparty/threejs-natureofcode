@@ -23,16 +23,29 @@ fixedCuboid descriptor
   dimensions { width: number, height: number, depth: number },
   scene: threeJsScene,
   world; cannonJsWorld,
-  debugWorld: debugWorld
+  debugWorld: debugWorld,
+  material: cannonJsMaterial
 }
 
 */
 
+
+const createContact = (object1, object2) => {
+  /*
+    Defines what happens when two materials meet.
+
+    https://schteppe.github.io/cannon.js/docs/classes/ContactMaterial.html
+  */
+
+
+}
+
 const fixedCuboid = (descriptor) => {
   /* This is something like a ground or a building... ie something that doesn't move */
 
+  let material = descriptor.material | {};
   let cannonShape = new CANNON.Box(new CANNON.Vec3(descriptor.dimensions.width, descriptor.dimensions.depth, descriptor.dimensions.height));
-  let cannonBody = new CANNON.Body({ mass: 0 });
+  let cannonBody = new CANNON.Body({ mass: 0 }, material);
   cannonBody.addShape(cannonShape);
   cannonBody.position.set(descriptor.position.x,descriptor.position.y,descriptor.position.z);
   cannonBody.quaternion.setFromEuler(descriptor.rotation.x, descriptor.rotation.y, descriptor.rotation.z);
@@ -50,6 +63,9 @@ const fixedCuboid = (descriptor) => {
   threeMesh.rotation.x = descriptor.rotation.x;
   threeMesh.rotation.y = descriptor.rotation.y;
   threeMesh.rotation.z = descriptor.rotation.z;
+
+
+
 
   return { cannon: cannonBody, three: threeMesh };
 
@@ -71,7 +87,7 @@ dynamicCuboid descriptor
 */
 const dynamicCuboid = (descriptor) => {
   /* This is something like a ground or a building... ie something that doesn't move */
-
+  let material = descriptor.material | {};
   let cannonShape = new CANNON.Box(new CANNON.Vec3(descriptor.dimensions.width, descriptor.dimensions.depth, descriptor.dimensions.height));
   let cannonBody = new CANNON.Body({ mass: descriptor.mass });
   cannonBody.addShape(cannonShape);
@@ -81,6 +97,9 @@ const dynamicCuboid = (descriptor) => {
   if (descriptor.debugWorld) {
     descriptor.debugWorld.addBody(cannonBody);
   }
+
+
+
 
   descriptor.world.add(cannonBody);
 
@@ -111,10 +130,10 @@ dynamicSphere descriptor
 
 */
 const dynamicSphere = (descriptor) => {
-  /* This is something like a ground or a building... ie something that doesn't move */
 
+  let material = descriptor.material | {};
   let cannonShape = new CANNON.Sphere(descriptor.dimensions.radius);
-  let cannonBody = new CANNON.Body({ mass: descriptor.mass });
+  let cannonBody = new CANNON.Body({ mass: descriptor.mass }, material);
   cannonBody.addShape(cannonShape);
   cannonBody.position.set(descriptor.position.z,descriptor.position.y,descriptor.position.x);
   cannonBody.quaternion.setFromEuler(descriptor.rotation.x, descriptor.rotation.y, descriptor.rotation.z);
