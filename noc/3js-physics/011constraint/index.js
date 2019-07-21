@@ -4,7 +4,7 @@ let fallingSpheres = [];
 let fallingCubes = [];
 let springs = [];
 let startPlatformPosition = 0;
-let goalPlatformPosition = 0;
+let goalPlatformPosition = .4;
 let currentPlatformPosition = 0;
 let groundMaterial;
 let bouncyMaterial;
@@ -176,7 +176,7 @@ function addFallingSphere(intialPosition, initialDimensions, mass) {
   let options1 = {};
   options1.position = {x: 0,y: 60, z: 0};
   options1.rotation = {x: 10, y: 0, z: 0};
-  options1.dimensions = {width: 6, height: 2, depth: 2};
+  options1.dimensions = {width: 13, height: 3, depth: 1};
   options1.mass = 10;
   options1.scene = scene;
   options1.world = world;
@@ -229,7 +229,7 @@ function addPlatforms() {
   options.material = groundMaterial;
 
   platform = fixedCuboid(options);
-  scene.add( platform.three );
+  //scene.add( platform.three );
 
   let optionsa = {};
   optionsa.position = {x: 0, y: -40, z: 0};
@@ -241,7 +241,7 @@ function addPlatforms() {
   optionsa.material = groundMaterial;
 
   platforma = fixedCuboid(optionsa);
-  scene.add( platforma.three );
+  //scene.add( platforma.three );
 
   let options1 = {};
   options1.position = {x: 0, y: 40, z: 0};
@@ -253,7 +253,7 @@ function addPlatforms() {
   options1.material = groundMaterial;
 
   platform1 = fixedCuboid(options1);
-  scene.add( platform1.three );
+  // scene.add( platform1.three );
 
   let options2 = {};
   options2.position = {x: -40, y: 0, z: 0};
@@ -265,7 +265,7 @@ function addPlatforms() {
   options2.material = groundMaterial;
 
   platform2 = fixedCuboid(options2);
-  scene.add( platform2.three );
+  // scene.add( platform2.three );
 
   let options3 = {};
   options3.position = {x: 0, y: 0, z: 40};
@@ -277,7 +277,7 @@ function addPlatforms() {
   options3.material = groundMaterial;
 
   platform3 = fixedCuboid(options3);
-  scene.add( platform3.three );
+  // scene.add( platform3.three );
 
   let options4 = {};
   options4.position = {x: 0, y: 0, z: -40};
@@ -289,7 +289,7 @@ function addPlatforms() {
   options4.material = groundMaterial;
 
   platform4 = fixedCuboid(options4);
-  scene.add( platform4.three );
+//  scene.add( platform4.three );
 
   let options5 = {};
   options5.position = {x: 40, y: 0, z: 0};
