@@ -156,3 +156,19 @@ const dynamicSphere = (descriptor) => {
   return { cannon: cannonBody, three: threeMesh };
 
 }
+
+const cannonSpring = (body1, body2, options) => {
+  /* going with default options for now */
+
+  options = {
+              localAnchorA: new CANNON.Vec3(0,0,0),
+              localAnchorB: new CANNON.Vec3(0,0,0),
+              restLength : 0,
+              stiffness : 50,
+              damping : 1,
+          };
+
+  var spring = new CANNON.Spring(body1,body2, options);
+  return spring;
+
+}
