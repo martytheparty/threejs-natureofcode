@@ -14,7 +14,7 @@ let controls;
 
 const setupPhysics = () => {
   world = new CANNON.World();
-  world.gravity.set(0,-60,0);
+  world.gravity.set(0,-50,0);
   world.broadphase = new CANNON.NaiveBroadphase();
   world.solver.iterations = 10;
   world.solver.tolerance = 0;
@@ -23,7 +23,7 @@ const setupPhysics = () => {
 
 
 const updateSceneData = () => {
-  if (world) world.step(1/60);
+  if (world) world.step(1/20);
 }
 
 
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   camera = new THREE.PerspectiveCamera( 70, 1, 0.01, 10000 );
   controls = new THREE.OrbitControls( camera );
 
-  camera.position.x = 240;
+  camera.position.x = 540;
   camera.position.y = 40;
   camera.position.z = 0;
   camera.lookAt(new THREE.Vector3(0,0,0));
@@ -85,12 +85,13 @@ function addPlatforms() {
 
 
   for(let i = 0; i < 100; i++) {
+    let mplier = ((100-i)/100)*((100-i)/100)
     let options = {};
     let zposition = 100 - i*2;
-    let height = 100 - i;
-    options.position = {x: 0, y: i*-1, z: zposition};
+    let height = (100 - i)*mplier;
+    options.position = {x: 0, y: 1*height, z: zposition};
     options.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
-    options.dimensions = {width: 240, height: height, depth: 2};
+    options.dimensions = {width: 240, height: height, depth: 1};
     options.scene = scene;
     options.world = world;
     options.debugWorld = false;
@@ -106,7 +107,7 @@ function addPlatforms() {
 function addFallingSphere(intialPosition, initialDimensions, mass) {
   let maxCount = 100;
   let options = {};
-  options.position = {x: 0,y: 130, z: -90};
+  options.position = {x: 0,y: 330, z: -90};
   options.rotation = {x: 0, y: 0, z: 0};
   options.dimensions = initialDimensions;
   options.mass = 100;
@@ -125,7 +126,7 @@ function addFallingSphere(intialPosition, initialDimensions, mass) {
 
 
 document.onclick = () => {
-   addFallingSphere({x: 0,y: 130, z: -100}, {radius: 3}, 1);
+   addFallingSphere({x: 0,y: 130, z: -100}, {radius: 13}, 1);
 }
 
 sceneUpdateInterval = setInterval(updateSceneData, 1000/framerate);
