@@ -57,7 +57,7 @@ let generateSurfaceObjects = () => {
 
       options.position = {x: position.x, y: position.z, z: position.y};
       options.rotation = {x: 0, y: 0, z: 0};
-      options.dimensions = {radius: .5};
+      options.dimensions = {radius: .25};
       options.mass = 0;
       options.scene = scene;
       options.world = world;
@@ -74,7 +74,7 @@ let generateSurfaceObjects = () => {
   );
 
   if (incomplete) {
-    setTimeout(generateSurfaceObjects, 500);
+    setTimeout(generateSurfaceObjects);
   }
 
 }
