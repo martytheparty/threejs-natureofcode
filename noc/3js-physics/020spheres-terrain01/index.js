@@ -48,6 +48,7 @@ let calculateSurface = () => {
 
 let generateSurfaceObjects = () => {
   let incomplete = false;
+  let count = 0;
   surface.forEach(
     (position) => {
       //console.log(sphere);
@@ -73,7 +74,7 @@ let generateSurfaceObjects = () => {
   );
 
   if (incomplete) {
-    setTimeout(generateSurfaceObjects, 0);
+    setTimeout(generateSurfaceObjects, 100);
   }
 
 }
