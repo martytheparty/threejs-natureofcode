@@ -14,6 +14,71 @@ let bouncyBouncyContact;
 let controls;
 let cellbody;
 
+/*
+ * Starting Corner:
+ * x - displacement
+ * y - displacement
+ *
+ * z - displacementFunction
+ */
+
+let startingCorner = { x: -10, y: -20};
+let xDisplacement = 20;
+let yDisplacement = 40;
+let zDisplacementFunction = (x, y) => {
+  /* straight line */
+  return y*(-1);
+};
+
+let surface = [];
+
+let calculateSurface = () => {
+  for (let i = 0; i < xDisplacement; i++ ) {
+    for (let j = 0; j < yDisplacement; j++ ) {
+      const x = startingCorner.x + i;
+      const y = startingCorner.y + j;
+      const z = zDisplacementFunction(x,y);
+      //console.log(`x: ${x} y: ${y} z: ${z}`);
+      surface.push({x, y, z});
+    }
+  }
+}
+
+
+
+let generateSurfaceObjects = () => {
+  let incomplete = false;
+  surface.forEach(
+    (position) => {
+      //console.log(sphere);
+
+      options = {};
+
+      options.position = {x: position.x, y: position.z, z: position.y};
+      options.rotation = {x: 0, y: 0, z: 0};
+      options.dimensions = {radius: .5};
+      options.mass = 0;
+      options.scene = scene;
+      options.world = world;
+      options.debugWorld = false;
+      options.material = groundMaterial;
+
+      if (!position.sphere && !incomplete) {
+        position.sphere = dynamicSphere(options);
+        scene.add( position.sphere.three );
+        incomplete = true;
+      }
+
+    }
+  );
+
+  if (incomplete) {
+    setTimeout(generateSurfaceObjects, 0);
+  }
+
+}
+
+//renderSurfaceObjects();
 
 const setupPhysics = () => {
   world = new CANNON.World();
@@ -82,14 +147,7 @@ function uiSychronization() {
 
   if (world ) {
 
-    cellbody.three.position.x = cellbody.cannon.position.x;
-    cellbody.three.position.y = cellbody.cannon.position.y;
-    cellbody.three.position.z = cellbody.cannon.position.z;
 
-    cellbody.three.quaternion.x = cellbody.cannon.quaternion.x;
-    cellbody.three.quaternion.y = cellbody.cannon.quaternion.y;
-    cellbody.three.quaternion.z = cellbody.cannon.quaternion.z;
-    cellbody.three.quaternion.w = cellbody.cannon.quaternion.w;
 
     fallingSpheres.forEach(
       (sphere, i) => {
@@ -136,101 +194,26 @@ document.addEventListener("DOMContentLoaded", () => {
   1. Add four static spheres
   2. Add a platform that is location constrained to the spheres
   */
-  addCell();
+  //addCell();
+
+
+  calculateSurface();
+  generateSurfaceObjects();
+
 
   // addPlatforms();
   document.body.appendChild( renderer.domElement );
   draw();
   document.onclick = () => {
-     addFallingSphere({x: 0,y: 20, z: 0}, {radius: 3}, 1);
+     addFallingSphere({x: 0,y: 5, z: 0}, {radius: 1}, 1);
   }
 });
 
-function addCell() {
-  const cell = {};
-  cell.cornerRadius = {radius: .1};
-  cell.cornerDistance = 8;
-  cell.constraintDistance = 8;
-  cell.scene = scene;
-  cell.world = world;
-
-  /* Four static spheres and a thin rectangle that is constrained by location */
-  /* TOP */
-  cell.topOptions = {};
-
-  cell.topOptions.position = {x: cell.cornerDistance,y: 0, z: 0};
-  cell.topOptions.rotation = {x: 0, y: 0, z: 0};
-  cell.topOptions.dimensions = cell.cornerRadius;
-  cell.topOptions.mass = 0;
-  cell.topOptions.scene = cell.scene;
-  cell.topOptions.world = cell.world;
-  cell.topOptions.debugWorld = false;
-  cell.topOptions.material = groundMaterial;
-  let topSphere = dynamicSphere(cell.topOptions);
-  scene.add( topSphere.three );
-  /* BOTTOM */
-  cell.bottomOptions = {};
-  cell.bottomOptions.position = {x: -1*cell.cornerDistance,y: 0, z: 0};
-  cell.bottomOptions.rotation = {x: 0, y: 0, z: 0};
-  cell.bottomOptions.dimensions = cell.cornerRadius;
-  cell.bottomOptions.mass = 0;
-  cell.bottomOptions.scene = cell.scene;
-  cell.bottomOptions.world = cell.world;
-  cell.bottomOptions.debugWorld = false;
-  cell.bottomOptions.material = groundMaterial;
-  let bottomSphere = dynamicSphere(cell.bottomOptions);
-  scene.add( bottomSphere.three );
-  /* LEFT */
-  cell.leftOptions = {};
-  cell.leftOptions.position = {x: 0,y: 0, z: -1*cell.cornerDistance};
-  cell.leftOptions.rotation = {x: 0, y: 0, z: 0};
-  cell.leftOptions.dimensions = cell.cornerRadius;
-  cell.leftOptions.mass = 0;
-  cell.leftOptions.scene = cell.scene;
-  cell.leftOptions.world = cell.world;
-  cell.leftOptions.debugWorld = false;
-  cell.leftOptions.material = groundMaterial;
-  let leftSphere = dynamicSphere(cell.leftOptions);
-  scene.add( leftSphere.three );
-  /* RIGHT */
-  cell.rightOptions = {};
-  cell.rightOptions.position = {x: 0,y: 0, z: cell.cornerDistance};
-  cell.rightOptions.rotation = {x: 0, y: 0, z: 0};
-  cell.rightOptions.dimensions = cell.cornerRadius;
-  cell.rightOptions.mass = 0;
-  cell.rightOptions.scene = cell.scene;
-  cell.rightOptions.world = cell.world;
-  cell.rightOptions.debugWorld = false;
-  cell.rightOptions.material = groundMaterial;
-  let rightSphere = dynamicSphere(cell.rightOptions);
-  scene.add( rightSphere.three );
-
-  /* rectangle */
-  const bodyOptions = {};
-  bodyOptions.position = {x: 0, y: 0, z: 0};
-  bodyOptions.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
-  bodyOptions.dimensions = {width: (cell.cornerDistance - 1), height: 1, depth: (cell.cornerDistance - 1)};
-  bodyOptions.mass = 10000;
-  bodyOptions.scene = cell.scene;
-  bodyOptions.world = cell.world;
-  bodyOptions.debugWorld = false;
-  bodyOptions.material = bouncyMaterial;
-  cellbody = dynamicCuboid(bodyOptions);
-  scene.add( cellbody.three );
-
-  fallingCubes.unshift(cellbody);
-
-
-  world.addConstraint(new CANNON.DistanceConstraint(rightSphere.cannon,cellbody.cannon,cell.constraintDistance));
-  world.addConstraint(new CANNON.DistanceConstraint(leftSphere.cannon,cellbody.cannon,cell.constraintDistance));
-  world.addConstraint(new CANNON.DistanceConstraint(bottomSphere.cannon,cellbody.cannon,cell.constraintDistance));
-  world.addConstraint(new CANNON.DistanceConstraint(topSphere.cannon,cellbody.cannon,cell.constraintDistance));
-}
 
 function addFallingSphere(intialPosition, initialDimensions, mass) {
   let maxCount = 10;
   let options = {};
-  options.position = {x: 0,y: 130, z: 0};
+  options.position = {x: 0,y: 20, z: -8};
   options.rotation = {x: 0, y: 0, z: 0};
   options.dimensions = initialDimensions;
   options.mass = 100;
