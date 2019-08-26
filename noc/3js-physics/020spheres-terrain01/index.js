@@ -74,7 +74,7 @@ let generateSurfaceObjects = () => {
   );
 
   if (incomplete) {
-    setTimeout(generateSurfaceObjects, 100);
+    setTimeout(generateSurfaceObjects, 500);
   }
 
 }
