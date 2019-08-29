@@ -22,8 +22,8 @@ let cellbody;
  * z - displacementFunction
  */
 
-let startingCorner = { x: -10, y: -20};
-let xDisplacement = 20;
+let startingCorner = { x: -20, y: -20};
+let xDisplacement = 40;
 let yDisplacement = 40;
 let zDisplacementFunction = (x, y) => {
   /* straight line */
@@ -59,7 +59,7 @@ let generateSurfaceObjects = () => {
 
       options.position = {x: position.x, y: position.z, z: position.y};
       options.rotation = {x: 0, y: 0, z: 0};
-      options.dimensions = {width: .25, height: .25, depth: .25};
+      options.dimensions = {width: .1, height: .1, depth: .1};
       options.mass = 0;
       options.scene = scene;
       options.world = world;
