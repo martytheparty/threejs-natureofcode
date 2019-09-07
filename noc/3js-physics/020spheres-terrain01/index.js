@@ -47,8 +47,6 @@ let calculateSurface = () => {
 
 
 let generateSurfaceObjects = () => {
-  let incomplete = false;
-  let count = 0;
   surface.forEach(
     (position) => {
       //console.log(sphere);
@@ -57,26 +55,18 @@ let generateSurfaceObjects = () => {
 
       options.position = {x: position.x, y: position.z, z: position.y};
       options.rotation = {x: 0, y: 0, z: 0};
-      options.dimensions = {radius: .25};
+      options.dimensions = {radius: .5};
       options.mass = 0;
       options.scene = scene;
       options.world = world;
       options.debugWorld = false;
       options.material = groundMaterial;
 
-      if (!position.sphere && !incomplete) {
-        position.sphere = dynamicSphere(options);
-        scene.add( position.sphere.three );
-        incomplete = true;
-      }
+      position.sphere = dynamicSphere(options);
 
+      //scene.add( sphere.three );
     }
   );
-
-  if (incomplete) {
-    setTimeout(generateSurfaceObjects);
-  }
-
 }
 
 //renderSurfaceObjects();
@@ -173,7 +163,7 @@ function draw() {
   camera.lookAt(new THREE.Vector3(0,0,0));
   renderer.render( scene, camera );
   requestAnimationFrame( draw );
-  controls.update();
+  //controls.update();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -183,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setSize( window.innerWidth, window.innerHeight );
   camera = new THREE.PerspectiveCamera( 70, 1, 0.01, 10000 );
-  controls = new THREE.OrbitControls( camera );
+  //controls = new THREE.OrbitControls( camera );
   camera.position.x = 100;
   camera.position.y = 10;
   camera.position.z = 0;
