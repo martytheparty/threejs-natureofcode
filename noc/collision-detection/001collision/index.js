@@ -160,13 +160,13 @@ function agent() {
 
 function setupButtons() {
   let upButton = document.getElementById('up');
-  upButton.touchstart = () => {
+  upButton.ontouchstart = () => {
     rotateX = 0;
     rotateY = rotationRate;
     upButton.style = 'border: 3px solid blue;background-color:#ccc';
   }
 
-  upButton.touchend = () => {
+  upButton.ontouchend = () => {
     rotateX = 0;
     rotateY = 0;
     upButton.style = ''
