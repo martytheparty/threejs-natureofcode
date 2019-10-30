@@ -160,13 +160,13 @@ function agent() {
 
 function setupButtons() {
   let upButton = document.getElementById('up');
-  upButton.onmousedown = () => {
+  upButton.onpointerdown = () => {
     rotateX = 0;
     rotateY = rotationRate;
     upButton.style = 'border: 3px solid blue;background-color:#ccc';
   }
 
-  upButton.onmouseup = () => {
+  upButton.onpointerup = () => {
     rotateX = 0;
     rotateY = 0;
     upButton.style = ''
