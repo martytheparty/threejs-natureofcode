@@ -160,7 +160,7 @@ function agent() {
 
 function setupButtons() {
   let upButton = document.getElementById('up');
-  upButton.ontouchstart = () => {
+  upButton.onTouch = () => {
     rotateX = 0;
     rotateY = rotationRate;
     upButton.style = 'border: 3px solid blue;background-color:#ccc';
@@ -170,6 +170,18 @@ function setupButtons() {
     rotateX = 0;
     rotateY = 0;
     upButton.style = ''
+  }
+
+
+  upButton.onmousedown = () => {
+    rotateX = 0;
+    rotateY = rotationRate;
+    upButton.style = 'border: 3px solid blue;background-color:#ccc';
+  }
+  upButton.onmouseup = () => {
+    rotateX = 0;
+    rotateY = 0;
+    upButton.style = '';
   }
 
   let downButton = document.getElementById('down');
