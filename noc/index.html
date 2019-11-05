@@ -205,5 +205,21 @@
     <li><a href='aa/003distance/index.html'>Distance Aware AA</a>
   </ul>
 
+  <h2>Direction Control  <span id='vx'></span>:<span id='vy'></span></h2>
+  <script src="libs/components/two-d-control.js"></script>
+  <control-2d id="c2d"></control-2d>
+  <script>
+    let control = document.getElementById('c2d');
+    let vx = document.getElementById('vx');
+    let vy = document.getElementById('vy');
+
+    control.addOnchangeListener(
+      (pos) => { 
+        console.log(pos);
+        vx.innerHTML = Math.floor(pos.currentX);
+        vy.innerHTML = Math.floor(pos.currentY);
+      }
+    );
+  </script>
 </body>
 </html>
