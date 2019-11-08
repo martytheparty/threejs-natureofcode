@@ -158,80 +158,27 @@ function agent() {
   scene.add( aa.three );
 }
 
-function setupButtons() {
-  let upButton = document.getElementById('up');
-  upButton.onmousedown = () => {
-    rotateX = 0;
-    rotateY = rotationRate;
-    upButton.style = 'border: 3px solid blue;background-color:#ccc';
-  }
-
-  upButton.onmouseup = () => {
-    rotateX = 0;
-    rotateY = 0;
-    upButton.style = ''
-  }
-
-
-  upButton.onmousedown = () => {
-    rotateX = 0;
-    rotateY = rotationRate;
-    upButton.style = 'border: 3px solid blue;background-color:#ccc';
-  }
-  upButton.onmouseup = () => {
-    rotateX = 0;
-    rotateY = 0;
-    upButton.style = '';
-  }
-
-  let downButton = document.getElementById('down');
-  downButton.onmousedown = () => {
-    rotateX = 0;
-    rotateY = -1*rotationRate;
-    downButton.style = 'border: 3px solid blue;background-color:#ccc';
-  }
-  downButton.onmouseup = () => {
-    rotateX = 0;
-    rotateY = 0;
-    downButton.style = '';
-  }
-
-  let leftButton = document.getElementById('left');
-  leftButton.onmousedown = () => {
-    rotateX = rotationRate;
-    rotateY = 0;
-    leftButton.style = 'border: 3px solid blue;background-color:#ccc';
-  }
-  leftButton.onmouseup = () => {
-    rotateX = 0;
-    rotateY = 0;
-    leftButton.style = '';
-  }
-
-  let rightButton = document.getElementById('right');
-  rightButton.onmousedown = () => {
-    rotateX = -1*rotationRate;
-    rotateY = 0;
-    rightButton.style = 'border: 3px solid blue;background-color:#ccc';
-  }
-  rightButton.onmouseup = () => {
-    rotateX = 0;
-    rotateY = 0;
-    rightButton.style = '';
-  }
-
+function setupController() {
+  let control = document.getElementById('c2d');
+  control.addOnchangeListener(
+    (pos) => { 
+      console.log(pos);
+      rotateX = -1*Math.floor(pos.currentX)/10;
+      rotateY = Math.floor(pos.currentY)/10;
+    }
+  );
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  setupButtons();
+  setupController();
   setupPhysics();
   scene = new THREE.Scene();
   renderer = new THREE.WebGLRenderer( { antialias: true } );
   renderer.setSize( window.innerWidth, window.innerHeight );
   camera = new THREE.PerspectiveCamera( 70, 1, 0.01, 10000 );
   controls = new THREE.OrbitControls( camera );
-  camera.position.x = 100;
-  camera.position.y = 30;
+  camera.position.x = 200;
+  camera.position.y = 60;
   camera.position.z = 0;
   camera.lookAt(new THREE.Vector3(0,0,0));
   addCannonMaterials();

@@ -19,20 +19,21 @@
   .controls {
     position: fixed;
     left: 0;
+    bottom: 0;
     width: 100%;
     color: white;
     text-align: center;
   }
   </style>
+
+<script src="../../libs/components/two-d-control.js"></script>
+
 </head>
 <body>
 
 <div class='controls'>
-  <button id="up">&#x2191;</button>
-  <button id="down">&#x2193;</button>
-  <button id="left">&#x2190;</button>
-  <button id="right">&#x2192;</button>
-  <span id='status' style='background-color:#000000;color:#FFFFFF'>Collission FALSE</span>
+  <control-2d id="c2d"></control-2d>
+  <div id='status' style='background-color:#000000;color:#FFFFFF'>Collission FALSE</div>
 </div>
 </body>
 </html>

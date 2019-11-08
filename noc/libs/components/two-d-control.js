@@ -3,17 +3,17 @@ class Control2d extends HTMLElement {
     ele = document.createElement('canvas');
     ctx;
     rect;
-    x = 100; 
-    y = 100;
+    x = 50; 
+    y = 50;
     listeners = [];
 
     constructor() {
       super();
-      this.ele.width=200;
-      this.ele.height=200;
+      this.ele.width=100;
+      this.ele.height=100;
       this.ctx = this.ele.getContext("2d");
       this.ctx.fillStyle = "#CCC";
-      this.ctx.fillRect(0, 0, 200, 200);
+      this.ctx.fillRect(0, 0, 100, 100);
       this.ctx.fillStyle = "#000";
       this.ele.addEventListener('click', e => {
         this.clickCount++;
@@ -27,8 +27,8 @@ class Control2d extends HTMLElement {
         this.y = event.y - this.rect.top;
         this.draw();
 
-        let currentX = this.x - 100;
-        let currentY = -1*(this.y - 100);
+        let currentX = this.x - 50;
+        let currentY = -1*(this.y - 50);
 
         this.listeners.forEach(
             (callback) => {
@@ -40,10 +40,10 @@ class Control2d extends HTMLElement {
 
     draw() {
         this.ctx.fillStyle = "#CCC";
-        this.ctx.fillRect(0, 0, 200, 200);
+        this.ctx.fillRect(0, 0, 100, 100);
 
         this.ctx.beginPath();
-        this.ctx.arc(100, 100, 30, 0 ,2*Math.PI, true);
+        this.ctx.arc(50, 50, 15, 0 ,2*Math.PI, true);
         this.ctx.closePath();
         this.ctx.stroke();
 
