@@ -18,10 +18,17 @@ let C = SAT.Circle;
 let P = SAT.Polygon;
 let collidedText = "";
 const interiorOneOptions = {};
+const westWall = {};
+const eastWall = {};
+const northWall = {};
+const southWall = {};
 const groundOptions = {};
 const aaOptions = {};
 let rotationRate = 3; // The speed the ball rotates 
 
+const wallList = [];
+let satSet = false;
+var circle;
 
 document.addEventListener('keydown', changeDirection);
 
@@ -133,7 +140,7 @@ function floor() {
 }
 
 function walls() {
-  interiorOneOptions.position = {x: 0, y: -30, z: 0};
+  interiorOneOptions.position = {x: -30, y: -30, z: 30};
   interiorOneOptions.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
   interiorOneOptions.dimensions = {width: 10, height: 10, depth: 10};
   interiorOneOptions.mass = 0;
@@ -143,6 +150,56 @@ function walls() {
   interiorOneOptions.material = bouncyMaterial;
   let interiorOne = dynamicCuboid(interiorOneOptions);
   scene.add( interiorOne.three );
+  wallList.push(interiorOneOptions);
+
+  westWall.position = {x: 0, y: -30, z: 100};
+  westWall.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
+  westWall.dimensions = {width: 100, height: 5, depth: 3};
+  westWall.mass = 0;
+  westWall.scene = scene;
+  westWall.world = world;
+  westWall.debugWorld = false;
+  westWall.material = bouncyMaterial;
+  let west = dynamicCuboid(westWall);
+  scene.add( west.three );
+  wallList.push(westWall);
+
+  eastWall.position = {x: 0, y: -30, z: -100};
+  eastWall.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
+  eastWall.dimensions = {width: 100, height: 5, depth: 3};
+  eastWall.mass = 0;
+  eastWall.scene = scene;
+  eastWall.world = world;
+  eastWall.debugWorld = false;
+  eastWall.material = bouncyMaterial;
+  let east = dynamicCuboid(eastWall);
+  scene.add( east.three );
+  wallList.push(eastWall);
+
+  southWall.position = {x: 100, y: -30, z: 0};
+  southWall.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
+  southWall.dimensions = {width: 3, height: 5, depth: 100};
+  southWall.mass = 0;
+  southWall.scene = scene;
+  southWall.world = world;
+  southWall.debugWorld = false;
+  southWall.material = bouncyMaterial;
+  let south = dynamicCuboid(southWall);
+  scene.add( south.three );
+  wallList.push(southWall);
+
+  northWall.position = {x: -100, y: -30, z: 0};
+  northWall.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
+  northWall.dimensions = {width: 3, height: 5, depth: 100};
+  northWall.mass = 0;
+  northWall.scene = scene;
+  northWall.world = world;
+  northWall.debugWorld = false;
+  northWall.material = bouncyMaterial;
+  let north = dynamicCuboid(northWall);
+  scene.add( north.three );
+  wallList.push(northWall);
+
 }
 
 function agent() {
@@ -162,7 +219,6 @@ function setupController() {
   let control = document.getElementById('c2d');
   control.addOnchangeListener(
     (pos) => { 
-      console.log(pos);
       rotateX = -1*Math.floor(pos.currentX)/10;
       rotateY = Math.floor(pos.currentY)/10;
     }
@@ -192,35 +248,72 @@ document.addEventListener("DOMContentLoaded", () => {
 /* SAT WALL*/
 let ulx, uly, llx, lly, lrx, lry, urx, ury, middleWallPosition,middleWall;
 
+function getWallPosition(options) {
+  return position = new V(options.position.x, options.position.z);
+}
+
+function getWallCorners(options) {
+  let corner = {};
+  ulx = -1*options.dimensions.width;
+  uly = 1*options.dimensions.depth;
+  llx = -1*options.dimensions.width;
+  lly = -1*options.dimensions.depth;
+  lrx = 1*options.dimensions.width;
+  lry = -1*options.dimensions.depth;
+  urx = 1*options.dimensions.width;
+  ury = 1*options.dimensions.depth;
+
+  corner.ul = new V(ulx, uly);
+  corner.ll = new V(llx, lly);
+  corner.lr = new V(lrx, lry);
+  corner.uu = new V(urx, ury);
+  return corner;
+
+}
+
+function setupSatWalls() {
+  wallList.forEach(
+    (wall) => {
+      const position = getWallPosition(wall);
+      const corners = getWallCorners(wall);
+      wall.satWall = new P(position, [ corners.ul, corners.ll, corners.lr, corners.uu ]);
+    }
+  );
+}
+
+
 function checkForWallCollission() {
   /* SAT CIRCLE*/
-  var circle = new C(new V(aa.cannon.position.x,aa.cannon.position.z), aaOptions.dimensions.radius + 3);
-
-  if (!uly) {
-    ulx = -1*interiorOneOptions.dimensions.width;
-    uly = 1*interiorOneOptions.dimensions.depth;
-    llx = -1*interiorOneOptions.dimensions.width;
-    lly = -1*interiorOneOptions.dimensions.depth;
-    lrx = 1*interiorOneOptions.dimensions.width;
-    lry = -1*interiorOneOptions.dimensions.depth;
-    urx = 1*interiorOneOptions.dimensions.width;
-    ury = 1*interiorOneOptions.dimensions.depth;
-    middleWallPosition = new V(interiorOneOptions.position.x,interiorOneOptions.position.z);
-
-    middleWall = new P(middleWallPosition, [
-      new V(ulx, uly),
-      new V(llx, lly),
-      new V(lrx, lry),
-      new V(urx, ury)
-    ]);
+  circle = new C(new V(aa.cannon.position.x,aa.cannon.position.z), aaOptions.dimensions.radius + 3);
+  if (!satSet) {
+    satSet = true;
+    setupSatWalls();
   }
 
-  var collided = SAT.testPolygonCircle(middleWall, circle, response);
-  if (collided) {
+  updateWallCollisions(circle);
+  setCollisionText();
+
+}
+
+function updateWallCollisions(aa) {
+  wallList.forEach(
+    (wall) => {
+      wall.collided = SAT.testPolygonCircle(wall.satWall, aa, response);
+    }
+  );
+}
+
+function setCollisionText() {
+  let collidedWalls = wallList.filter(
+    (wall) => {
+      return wall.collided;
+    }
+  )
+  if (collidedWalls.length > 0) {
     collidedText = "TRUE";
   } else  {
     collidedText = "FALSE";
-  }
+  }  
 }
 
 function uiSteering() {
