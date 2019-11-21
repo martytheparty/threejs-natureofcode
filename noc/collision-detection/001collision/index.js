@@ -27,6 +27,7 @@ const aaOptions = {};
 let rotationRate = 3; // The speed the ball rotates 
 
 const wallList = [];
+const cuboids = [];
 let satSet = false;
 var circle;
 
@@ -149,6 +150,7 @@ function walls() {
   interiorOneOptions.debugWorld = false;
   interiorOneOptions.material = bouncyMaterial;
   let interiorOne = dynamicCuboid(interiorOneOptions);
+  cuboids.push(interiorOne);
   scene.add( interiorOne.three );
   wallList.push(interiorOneOptions);
 
@@ -161,6 +163,7 @@ function walls() {
   westWall.debugWorld = false;
   westWall.material = bouncyMaterial;
   let west = dynamicCuboid(westWall);
+  cuboids.push(west);
   scene.add( west.three );
   wallList.push(westWall);
 
@@ -173,6 +176,7 @@ function walls() {
   eastWall.debugWorld = false;
   eastWall.material = bouncyMaterial;
   let east = dynamicCuboid(eastWall);
+  cuboids.push(east);
   scene.add( east.three );
   wallList.push(eastWall);
 
@@ -185,6 +189,7 @@ function walls() {
   southWall.debugWorld = false;
   southWall.material = bouncyMaterial;
   let south = dynamicCuboid(southWall);
+  cuboids.push(south);
   scene.add( south.three );
   wallList.push(southWall);
 
@@ -197,6 +202,7 @@ function walls() {
   northWall.debugWorld = false;
   northWall.material = bouncyMaterial;
   let north = dynamicCuboid(northWall);
+  cuboids.push(north);
   scene.add( north.three );
   wallList.push(northWall);
 
@@ -273,10 +279,12 @@ function getWallCorners(options) {
 
 function setupSatWalls() {
   wallList.forEach(
-    (wall) => {
+    (wall, i) => {
       const position = getWallPosition(wall);
       const corners = getWallCorners(wall);
-      wall.satWall = new P(position, [ corners.ul, corners.ll, corners.lr, corners.uu ]);
+      console.log( cuboids[i]);
+      wall.satWall = cuboids[i].sat;
+      //wall.satWall = new P(position, [ corners.ul, corners.ll, corners.lr, corners.uu ]);
     }
   );
 }
@@ -285,10 +293,10 @@ function setupSatWalls() {
 function checkForWallCollission() {
   /* SAT CIRCLE*/
   circle = new C(new V(aa.cannon.position.x,aa.cannon.position.z), aaOptions.dimensions.radius + 3);
-  if (!satSet) {
-    satSet = true;
-    setupSatWalls();
-  }
+  // if (!satSet) {
+  //   satSet = true;
+  //   setupSatWalls();
+  // }
 
   updateWallCollisions(circle);
   setCollisionText();
@@ -297,8 +305,8 @@ function checkForWallCollission() {
 
 function updateWallCollisions(aa) {
   wallList.forEach(
-    (wall) => {
-      wall.collided = SAT.testPolygonCircle(wall.satWall, aa, response);
+    (wall, i) => {
+      wall.collided = SAT.testPolygonCircle(cuboids[i].sat, aa, response);
     }
   );
 }

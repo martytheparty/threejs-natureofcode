@@ -98,9 +98,6 @@ const dynamicCuboid = (descriptor) => {
     descriptor.debugWorld.addBody(cannonBody);
   }
 
-
-
-
   descriptor.world.add(cannonBody);
 
   let threeShape = new THREE.BoxGeometry( descriptor.dimensions.width*2, descriptor.dimensions.depth*2, descriptor.dimensions.height*2 );
@@ -111,7 +108,34 @@ const dynamicCuboid = (descriptor) => {
   threeMesh.rotation.y = descriptor.rotation.y;
   threeMesh.rotation.z = descriptor.rotation.z;
 
-  return { cannon: cannonBody, three: threeMesh };
+  let satBody;
+  if (typeof SAT !== "undefined") {
+    let response = new SAT.Response();
+    let V = SAT.Vector;
+    let C = SAT.Circle;
+    let P = SAT.Polygon;
+    let position = new V(descriptor.position.x, descriptor.position.z);
+    let corners = {};
+    let ulx = -1*descriptor.dimensions.width;
+    let uly = 1*descriptor.dimensions.depth;
+    let llx = -1*descriptor.dimensions.width;
+    let lly = -1*descriptor.dimensions.depth;
+    let lrx = 1*descriptor.dimensions.width;
+    let lry = -1*descriptor.dimensions.depth;
+    let urx = 1*descriptor.dimensions.width;
+    let ury = 1*descriptor.dimensions.depth;
+    corners.ul = new V(ulx, uly);
+    corners.ll = new V(llx, lly);
+    corners.lr = new V(lrx, lry);
+    corners.uu = new V(urx, ury);
+    console.log(129);
+
+    satBody = new P(position, [ corners.ul, corners.ll, corners.lr, corners.uu ]);
+  }
+
+
+
+  return { cannon: cannonBody, three: threeMesh, sat: satBody };
 
 }
 
@@ -153,7 +177,14 @@ const dynamicSphere = (descriptor) => {
   threeMesh.rotation.y = descriptor.rotation.y;
   threeMesh.rotation.z = descriptor.rotation.z;
 
-  return { cannon: cannonBody, three: threeMesh };
+  //let satBody = new C(new V(descriptor.cannon.position.x,descriptor.cannon.position.z), descriptor.dimensions.radius + 3);
+  let satBody;
+  
+  if (typeof SAT !== "undefined") {
+    satBody = new C(new V(descriptor.position.x,descriptor.position.z), descriptor.dimensions.radius + 3);
+  }
+  
+  return { cannon: cannonBody, three: threeMesh, sat: satBody };
 
 }
 
