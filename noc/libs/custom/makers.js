@@ -171,6 +171,9 @@ const dynamicSphere = (descriptor) => {
 
   let threeShape = new THREE.SphereGeometry( descriptor.dimensions.radius, 32, 32 );
   let mat = new THREE.MeshNormalMaterial();
+  if (descriptor.color || descriptor.color === 0) {
+    mat = new THREE.MeshBasicMaterial({color: descriptor.color});
+  } 
   let threeMesh = new THREE.Mesh( threeShape, mat );
   threeMesh.position.set(-1*descriptor.position.x,descriptor.position.y,-1*descriptor.position.z);
   threeMesh.rotation.x = descriptor.rotation.x;
