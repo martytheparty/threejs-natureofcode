@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Basic 3js Scene</title>
+  <script src="../../libs/sat/SAT.js"></script>
+  <script src="../../libs/three/three.js"></script>
+  <script src="../../libs/three/OrbitControls.js"></script>
+  <script src="../../libs/cannon/cannon.js"></script>
+  <script src="../../libs/custom/makers.js"></script>
+
+
+  <script src="index.js"></script>
+  <meta name="viewport" content="width=device-width,user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="../../basic.css">
+  <style>
+  .controls {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+  }
+  </style>
+
+<script src="../../libs/components/two-d-control.js"></script>
+
+</head>
+<body>
+
+<div class='controls'>
+  <control-2d id="c2d"></control-2d>
+  <div id='status' style='background-color:#000000;color:#FFFFFF'>Collission FALSE</div>
+</div>
+</body>
+</html>

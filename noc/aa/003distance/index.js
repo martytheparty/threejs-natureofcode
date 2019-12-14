@@ -15,6 +15,17 @@ let backOptions;
 let leftOptions;
 let collisionXRotation = 0;
 let collisionZRotation = 0;
+let cuboids = [];
+
+let locations = [];
+/*
+{
+  x: number,
+  y: number,
+  collision: boolean
+}
+*/
+
 
 //renderSurfaceObjects();
 
@@ -136,6 +147,7 @@ function walls() {
   leftOptions.debugWorld = false;
   leftOptions.material = bouncyMaterial;
   let left = dynamicCuboid(leftOptions);
+  cuboids.push(left);
   scene.add( left.three );
 
   /* right wall */
@@ -149,6 +161,7 @@ function walls() {
   rightOptions.debugWorld = false;
   rightOptions.material = bouncyMaterial;
   let right = dynamicCuboid(rightOptions);
+  cuboids.push(right);
   scene.add( right.three );
 
   /* back wall */
@@ -162,6 +175,7 @@ function walls() {
   backOptions.debugWorld = false;
   backOptions.material = bouncyMaterial;
   back = dynamicCuboid(backOptions);
+  cuboids.push(back);
   scene.add( back.three );
 
   /* front wall */
@@ -175,6 +189,7 @@ function walls() {
   frontOptions.debugWorld = false;
   frontOptions.material = bouncyMaterial;
   let front = dynamicCuboid(frontOptions);
+  cuboids.push(front);
   scene.add( front.three );
 
   /* interior wall One */
@@ -188,6 +203,7 @@ function walls() {
   interiorOneOptions.debugWorld = false;
   interiorOneOptions.material = bouncyMaterial;
   let interiorOne = dynamicCuboid(interiorOneOptions);
+  cuboids.push(interiorOne);
   scene.add( interiorOne.three );
 
   /* interior wall Two */
@@ -201,13 +217,16 @@ function walls() {
   interiorTwoOptions.debugWorld = false;
   interiorTwoOptions.material = bouncyMaterial;
   let interiorTwo = dynamicCuboid(interiorTwoOptions);
+  cuboids.push(interiorTwo);
   scene.add( interiorTwo.three );
 
 }
 
+
+const aaOptions = {};
 function mover() {
 
-  const aaOptions = {};
+
   aaOptions.position = {x: -55, y: -30, z: 0};
   aaOptions.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
   aaOptions.dimensions = {radius: 5};
@@ -278,29 +297,73 @@ function changeDirection(e) {
 }
 
 function wander() {
-  // let x = Math.random() * 200 - 100;
-  // let y = Math.random() * 200 - 100;
-  // let z = Math.random() * 200 - 100;
-  let x = rotateX;
-  let y = 0;
-  let z = rotateY;
+  let x = Math.random() * 200 - 100;
+  let y = Math.random() * 200 - 100;
+  let z = Math.random() * 200 - 100;
+  // let x = rotateX;
+  // let y = 0;
+  // let z = rotateY;
   return {x, y, z};
 }
 
 function respond() {
-  let x = collisionXRotation;
+  let x = 0;
   let y = 0;
-  let z = collisionZRotation;
+  let z = 0;
   return {x, y, z};
 }
 
 let showData = false;
 let lastShowData = false;
+let response = new SAT.Response();
+let V = SAT.Vector;
+let C = SAT.Circle;
+let P = SAT.Polygon;
 
+const collisionMotionDescriptor = {
+  rotateX: 0,
+  rotateY: 0,
+  rotateZ: 0,
+  collisionAvoidance: false,
+  collisionAvoidanceCount: 0
+};
 function impendingWallCollision() {
-  collisionXRotation = 0;
-  collisionZRotation = 0;
-  let radius = aa.cannon.boundingRadius;
+  // let rotateX = aa.cannon.angularVelocity.set(pos.x,pos.y,pos.z);
+  //console.log(aa.cannon.angularVelocity);
+  let location = {};
+  location.x = aa.cannon.position.x;
+  location.y = aa.cannon.position.z;
+  location.collision = false;
+
+  let collision = false;
+  let circle = new C(new V(aa.cannon.position.x,aa.cannon.position.z), aaOptions.dimensions.radius + 3);
+  cuboids.forEach(
+    (cuboid) => {
+      
+/*
+{
+  x: number,
+  y: number,
+  collision: boolean
+}
+*/
+      collision = SAT.testPolygonCircle(cuboid.sat, circle, response);
+      if (collision) {
+        collisionMotionDescriptor.rotateX = aa.cannon.angularVelocity.x;
+        collisionMotionDescriptor.rotateY = aa.cannon.angularVelocity.y;
+        collisionMotionDescriptor.rotateZ = aa.cannon.angularVelocity.z;
+        collisionMotionDescriptor.collisionAvoidance = true;
+        collisionMotionDescriptor.collisionAvoidanceCount = 0;
+        location.collision = true;
+      }
+    }
+  );
+  locations.push(location);
+  //console.log(location);
+  return collision;
+  // collisionXRotation = 0;
+  // collisionZRotation = 0;
+  // let radius = aa.cannon.boundingRadius;
   /* Check Back Wall */
 
 // https://www.npmjs.com/package/sat
@@ -316,32 +379,32 @@ function impendingWallCollision() {
   //  console.log(`back option x - ${backOptions.position.x} y - ${backOptions.position.y} `);
   // backOptions.dimensions = {width: 1, height: 10, depth: 50}
 
-  var V = SAT.Vector;
-  var C = SAT.Circle;
-  var P = SAT.Polygon;
+  // var V = SAT.Vector;
+  // var C = SAT.Circle;
+  // var P = SAT.Polygon;
 
-  let backWallPosition = new V(backOptions.position.x,backOptions.position.y);
+  // let backWallPosition = new V(backOptions.position.x,backOptions.position.y);
 
   // backOptions.position = {x: -70, y: -30, z: 0};
   // backOptions.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
   // backOptions.dimensions = {width: 1, height: 10, depth: 50};
 
-  var backWall = new P(backWallPosition, [
-    new V(0, 0),
-    new V(backOptions.dimensions.height, 0),
-    new V(backOptions.dimensions.height, backOptions.dimensions.depth),
-    new V(0, backOptions.dimensions.depth)
-  ]);
+  // var backWall = new P(backWallPosition, [
+  //   new V(0, 0),
+  //   new V(backOptions.dimensions.height, 0),
+  //   new V(backOptions.dimensions.height, backOptions.dimensions.depth),
+  //   new V(0, backOptions.dimensions.depth)
+  // ]);
 
-  var circle = new SAT.Circle(new SAT.Vector(aa.cannon.position.x, aa.cannon.position.y), radius);
-  //debugger
-  var response = new SAT.Response();
-  let collissionDetected = false;
-  var collided = SAT.testPolygonCircle(backWall, circle, response);
-  if (collided){
-    collisionZRotation = -300;
-    collissionDetected = true;
-  }
+  // var circle = new SAT.Circle(new SAT.Vector(aa.cannon.position.x, aa.cannon.position.y), radius);
+  // //debugger
+  // var response = new SAT.Response();
+  // let collissionDetected = false;
+  // var collided = SAT.testPolygonCircle(backWall, circle, response);
+  // if (collided){
+  //   collisionZRotation = -300;
+  //   collissionDetected = true;
+  // }
 
 // leftOptions
 
@@ -350,24 +413,24 @@ function impendingWallCollision() {
 // leftOptions.dimensions = {width: 50, height: 10, depth: 1};
 // -55, 42
 //console.log(aa.cannon.position.x, aa.cannon.position.z);
-  let leftWallPosition = new V(leftOptions.position.x, leftOptions.position.z);
-  var leftWall = new P(leftWallPosition, [
-    new V(0, 0),
-    new V(0, leftOptions.dimensions.width),
-    new V(leftOptions.dimensions.depth, leftOptions.dimensions.width),
-    new V(leftOptions.dimensions.depth, 0)
-  ]);
-  var response1 = new SAT.Response();
+  // let leftWallPosition = new V(leftOptions.position.x, leftOptions.position.z);
+  // var leftWall = new P(leftWallPosition, [
+  //   new V(0, 0),
+  //   new V(0, leftOptions.dimensions.width),
+  //   new V(leftOptions.dimensions.depth, leftOptions.dimensions.width),
+  //   new V(leftOptions.dimensions.depth, 0)
+  // ]);
+  // var response1 = new SAT.Response();
 
-  collided = SAT.testPolygonCircle(leftWall, circle, response1);
-  if (collided){
-    collisionXRotation = 300;
-    collissionDetected = true;
-    console.log('LEFT WALL COLLISION');
-  }
+  // collided = SAT.testPolygonCircle(leftWall, circle, response1);
+  // if (collided){
+  //   collisionXRotation = 300;
+  //   collissionDetected = true;
+  //   console.log('LEFT WALL COLLISION');
+  // }
 
 
-  return collissionDetected;
+  // return collissionDetected;
 
 }
 function uiSteering() {
@@ -384,14 +447,23 @@ function uiSteering() {
 
 
   let pos = {x: 0, y: 0, z: 0};
-  if (impendingWallCollision()) {
-    //pos = wander();
+  if (collisionMotionDescriptor.collisionAvoidance) {
+    if (collisionMotionDescriptor.collisionAvoidanceCount < 5) {
+      pos.x = collisionMotionDescriptor.rotateX * -100;
+      pos.y = collisionMotionDescriptor.rotateY * -100;
+      pos.z = collisionMotionDescriptor.rotateZ * -100;
+      collisionMotionDescriptor.collisionAvoidanceCount++;
+    } else {
+      collisionMotionDescriptor.collisionAvoidance = false;
+    }
+  } else if (impendingWallCollision()) {
     pos = respond();
   } else {
-
+    // console.log('wander');
+    pos = wander();
   }
 
-  pos = wander();
+  // pos = wander();
 
   aa.cannon.angularVelocity.set(pos.x,pos.y,pos.z);
   aa.cannon.angularDamping = 0.1;

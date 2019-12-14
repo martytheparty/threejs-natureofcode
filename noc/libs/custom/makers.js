@@ -128,7 +128,7 @@ const dynamicCuboid = (descriptor) => {
     corners.ll = new V(llx, lly);
     corners.lr = new V(lrx, lry);
     corners.uu = new V(urx, ury);
-    console.log(129);
+
 
     satBody = new P(position, [ corners.ul, corners.ll, corners.lr, corners.uu ]);
   }
@@ -181,6 +181,10 @@ const dynamicSphere = (descriptor) => {
   let satBody;
   
   if (typeof SAT !== "undefined") {
+    let response = new SAT.Response();
+    let V = SAT.Vector;
+    let C = SAT.Circle;
+    let P = SAT.Polygon;
     satBody = new C(new V(descriptor.position.x,descriptor.position.z), descriptor.dimensions.radius + 3);
   }
   
