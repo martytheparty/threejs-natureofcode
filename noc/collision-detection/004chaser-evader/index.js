@@ -273,7 +273,7 @@ function agent() {
 }
 
 function byStanders() {
-  let bystanderCount = 100;
+  let bystanderCount = 30;
   for (let i = 0; i < bystanderCount; i++) {
     let bsOptions = {};
     bsOptions.position = {
@@ -415,25 +415,36 @@ function evade() {
   let geX  = ge.cannon.position.x;
   let geZ = ge.cannon.position.z;
 
-  let xDiff = 0 - geX;
-  let zDiff = 0 - geZ;
+  let xDiff =  geX;
+  let zDiff =  geZ;
 
-  //console.log(`${xDiff} ${zDiff}`);
+  console.log(`${xDiff} `);
+  
+  if (geX > 0) {
+    geRotateX = 10;
+  } else {
+    geRotateX = -10;
+  }
 
-  geRotateX = zDiff*.8;
-  geRotateY = xDiff*.8;
+  if (geZ > 0) {
+    geRotateY = -10;
+  } else  {
+    geRotateY = 10;
+  }
+  
+
 }
 
 function uiSteering() {
   checkForWallCollission();
-  chase();
+  chase()
 
   aa.cannon.angularVelocity.set(rotateX,0,rotateY);
   aa.cannon.angularDamping = 0.1;
 
-  // evade();
-  // ge.cannon.angularVelocity.set(geRotateX,0,geRotateY);
-  // ge.cannon.angularDamping = 0.1;
+  evade();
+  ge.cannon.angularVelocity.set(geRotateX,0,geRotateY);
+  ge.cannon.angularDamping = 0.1;
 }
 
 sceneUpdateInterval = setInterval(updateSceneData, 1000/framerate);
