@@ -340,11 +340,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let renderWidth = 0;
   let renderHeight = 0;
   if (window.innerWidth > window.innerHeight) {
-    renderHeight = window.innerHeight*.6;
-    renderWidth = window.innerHeight*.6;
+    renderHeight = window.innerHeight*.75;
+    renderWidth = window.innerHeight*.75;
   } else {
-    renderHeight = window.innerWidth*.6;
-    renderWidth = window.innerWidth*.6;
+    renderHeight = window.innerWidth;
+    renderWidth = window.innerWidth;
   }
 
   middleRenderer.setSize( renderWidth/3, renderHeight/3 );
