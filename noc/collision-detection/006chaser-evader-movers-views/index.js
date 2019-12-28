@@ -143,23 +143,55 @@ function draw() {
   if (!collisionDiv) {
     collisionDiv = document.getElementById("status");
   }
+
   camera.lookAt(new THREE.Vector3(0,0,0));
+  camera.position.x = 0;
+  camera.position.y = 200;
+  camera.position.z = 0;
   renderer.render( scene, camera );
   middleRenderer.render( scene, middleCamera );
-  
+
+  if(mainViewMode === "fixed") {
+    camera.position.x = 0;
+    camera.position.y = -30;
+    camera.position.z = 100;
+    camera.lookAt(new THREE.Vector3(0,0,0));
+    renderer.render( scene, camera );
+  }
+
   chaserCamera.lookAt(new THREE.Vector3(ge.three.position.x,ge.three.position.y,ge.three.position.z));
   chaserCamera.position.x = aa.three.position.x;
   chaserCamera.position.y = aa.three.position.y;
   chaserCamera.position.z = aa.three.position.z;
   chaserRenderer.render( scene, chaserCamera );
+
+  if(mainViewMode === "chaser") {
+    camera.position.x =  aa.three.position.x;
+    camera.position.y =  aa.three.position.y;
+    camera.position.z =  aa.three.position.z;
+    camera.lookAt(new THREE.Vector3(ge.three.position.x,ge.three.position.y,ge.three.position.z));
+    renderer.render( scene, camera );
+  }
+
   evaderCamera.lookAt(new THREE.Vector3(aa.three.position.x,aa.three.position.y,aa.three.position.z));
   evaderCamera.position.x = ge.three.position.x;
   evaderCamera.position.y = ge.three.position.y;
   evaderCamera.position.z = ge.three.position.z;
   evaderRenderer.render( scene, evaderCamera );
+
+  if(mainViewMode === "evader") {
+    camera.position.x =  ge.three.position.x;
+    camera.position.y =  ge.three.position.y;
+    camera.position.z =  ge.three.position.z;
+    camera.lookAt(new THREE.Vector3(aa.three.position.x,aa.three.position.y,aa.three.position.z));
+    renderer.render( scene, camera );
+  }
+
   requestAnimationFrame( draw );
-  controls.update();
-  collisionDiv.innerHTML = collidedText;
+
+
+  //controls.update();
+  // collisionDiv.innerHTML = collidedText;
 }
 
 let ceilingOptions = {};
@@ -189,18 +221,9 @@ function floor() {
 }
 
 function walls() {
-  // interiorOneOptions.position = {x: -30, y: -30, z: 30};
-  // interiorOneOptions.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
-  // interiorOneOptions.dimensions = {width: 10, height: 10, depth: 10};
-  // interiorOneOptions.mass = 0;
-  // interiorOneOptions.scene = scene;
-  // interiorOneOptions.world = world;
-  // interiorOneOptions.debugWorld = false;
-  // interiorOneOptions.material = bouncyMaterial;
-  // let interiorOne = dynamicCuboid(interiorOneOptions);
-  // cuboids.push(interiorOne);
-  // scene.add( interiorOne.three );
-  // wallList.push(interiorOneOptions);
+  /*
+  Adds the walls
+   */
 
   westWall.position = {x: 0, y: -35, z: 100};
   westWall.rotation = {x: 1*Math.PI/2, y: 0, z: 0};
@@ -323,10 +346,38 @@ let evaderRenderer;
 let middleCamera;
 let chaserCamera;
 let evaderCamera;
+let mainViewMode = "top";
+
+function setupViewButtons() {
+
+  const topViewButton = document.getElementById("topview-button");
+  const fixedViewButton = document.getElementById("fixedview-button");
+  const chaserViewButton = document.getElementById("chaserview-button");
+  const evaderViewButton = document.getElementById("evaderview-button");
+  topViewButton.onclick = () => {
+    mainViewMode = "top";
+  }
+
+  fixedViewButton.onclick = () => {
+    mainViewMode = "fixed";
+  }
+
+  chaserViewButton.onclick = () => {
+    mainViewMode = "chaser";
+  }
+
+  evaderViewButton.onclick = () => {
+    mainViewMode = "evader";
+  }
+
+
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   setupController();
   setupPhysics();
+  setupViewButtons();
+
   const mainCanvas = document.getElementById("main-view");
   const middleView = document.getElementById("middle-view");
   const chaserView = document.getElementById("chaser-view");
@@ -373,7 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderer = new THREE.WebGLRenderer( { antialias: true, canvas: mainCanvas } );
   renderer.setSize(  renderWidth, renderHeight );
   camera = new THREE.PerspectiveCamera( 70, 1, 0.01, 1000 );
-  controls = new THREE.OrbitControls( camera );
+  //controls = new THREE.OrbitControls( camera );
   camera.position.x = 0;
   camera.position.y = 200;
   camera.position.z = 0;
