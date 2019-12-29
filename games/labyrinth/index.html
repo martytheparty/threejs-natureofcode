@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <title>Marty The Party's Three D - Labyrinth Game</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/game.css">
+    </head>
+    <body id="body">
+        <div class="preloader">
+            <img src="../images/loader.svg" alt="spinner">
+        </div>
+
+        <div class="game">
+            <div class="item"></div>
+            <div class="item main">
+                <table border="1" style="margin: auto;">
+                    <tr>
+                        <td colspan="3"><canvas id="main"></canvas></td>
+                    </tr>
+                    <tr>
+                        <td><canvas id="front"></canvas></td>
+                        <td><canvas id="left"></canvas></td>
+                        <td><canvas id="ball"></canvas></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="item"></div>
+        </div>
+
+        <script src="sizing.js"></script>
+        <script src="../libs/three/three.js"></script>
+        <script src="../libs/cannon/cannon.js"></script>
+
+        <script>
+            document.getElementById("body").classList.add("loaded");
+        </script>
+
+    </body>
+</html>
