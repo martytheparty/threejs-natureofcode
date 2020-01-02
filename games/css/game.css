@@ -37,4 +37,13 @@ body {
   .loaded .game {
     opacity: auto;
   }
+
+
+  table  {
+    margin: auto;
+  }
+
+  td {
+    text-align: center;
+  }
   

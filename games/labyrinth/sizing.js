@@ -23,7 +23,7 @@ let sizing = () => {
     if (smallDimension*4 < 3*height/4) {
         dimension = dimension * height/(smallDimension*4)*.95;
         if (dimension > width) {
-            dimension = width*.90;
+            dimension = width*.75;
         }
         smallDimension = .333*dimension;
     }
@@ -38,7 +38,7 @@ let sizing = () => {
     leftCanvas.width = smallDimension;
     leftCanvas.height = smallDimension;
     ballCanvas.width = smallDimension;
-    ballCanvas.heigth = smallDimension;
+    ballCanvas.height = smallDimension;
 
 }
 
