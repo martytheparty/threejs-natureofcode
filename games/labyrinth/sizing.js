@@ -23,7 +23,7 @@ let sizing = () => {
     if (smallDimension*4 < 3*height/4) {
         dimension = dimension * height/(smallDimension*4)*.95;
         if (dimension > width) {
-            dimension = width*.75;
+            dimension = width*.35;
         }
         smallDimension = .333*dimension;
     }
