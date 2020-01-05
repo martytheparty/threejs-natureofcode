@@ -102,6 +102,14 @@
             let mesh = new THREE.Mesh(meshDescription.geometry, meshDescription.material);
             mesh.position.set(meshDescription.x, meshDescription.y, meshDescription.z);
             return mesh;
+        },
+        createViews: (meshDescription, sphereMeshDescription) => {
+            const views = [];
+            views.push(view.createMainView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
+            views.push(view.createFrontView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
+            views.push(view.createLeftView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
+            views.push(view.createBallView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
+            return views;
         }
     }
 
@@ -113,12 +121,7 @@
         const meshDescription = { geometry, material, x: 0, y: 0, z: 0 };
         sphereGeometry = new THREE.SphereGeometry(sphereDescription.radius, sphereDescription.sides, sphereDescription.sides);
         const sphereMeshDescription = { geometry: sphereGeometry, material: sphereMaterial, x: sphereDescription.x, y: sphereDescription.y, z: sphereDescription.z };    
-
-        floor.threeObjects.push(view.createMainView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
-        floor.threeObjects.push(view.createFrontView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
-        floor.threeObjects.push(view.createLeftView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
-        floor.threeObjects.push(view.createBallView(view.getRenderingMesh(meshDescription), view.getRenderingMesh(sphereMeshDescription)));
-
+        floor.threeObjects = view.createViews(meshDescription, sphereMeshDescription);
         return floor;
     }
 
