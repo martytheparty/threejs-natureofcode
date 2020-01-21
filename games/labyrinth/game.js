@@ -1,3 +1,4 @@
+
 ( () => {
     let world;
     const floor = new ThreeDObject();
@@ -13,19 +14,55 @@
     const sphereDescription = {
         radius: 20,
         sides: 32,
-        x: -150, 
+        x: -145, 
         y: 0, 
-        z: 50
+        z: 45
     };
 
     const sphereMeshes = [];
     const plaformMeshes = [];
+    const cannonPlatforms = [];
     const gravity = -100;
     let topCameraPosition = 350;
     let frontCameraXPosition = 250;
     let frontCameraZPosition = 20;
     let leftCameraYPosition = -250;
     let leftCameraZPosition = 20;
+
+    const gameApi = (
+        () => {
+            console.log('setup API');
+            const api = {};
+            api.setPosition = (position) => {
+                console.log('API '+position);
+
+                cannonPlatforms[0].quaternion.y = 0;
+                cannonPlatforms[0].quaternion.x = 0;
+                if(position === "u") {
+                    cannonPlatforms[0].quaternion.y = -.01;
+                } else if (position === "d") {
+                    cannonPlatforms[0].quaternion.y = .01;
+                } else if (position === "l") {
+                    cannonPlatforms[0].quaternion.x = .01;
+                } else if (position === "r") {
+                    cannonPlatforms[0].quaternion.x = -.01;
+                } else if (position === "dl") {
+                    cannonPlatforms[0].quaternion.y = .01;
+                    cannonPlatforms[0].quaternion.x = .01;
+                } else if (position === "ul") {
+                    cannonPlatforms[0].quaternion.y = -.01;
+                    cannonPlatforms[0].quaternion.x = .01;
+                } else if (position === "dr") {
+                    cannonPlatforms[0].quaternion.y = .01;
+                    cannonPlatforms[0].quaternion.x = -.01;
+                } else if (position === "ur") {
+                    cannonPlatforms[0].quaternion.y = -.01;
+                    cannonPlatforms[0].quaternion.x = -.01;
+                }
+            };
+            return api;
+        }
+    )();
 
     const view = {
         createMainView: (mesh, sphereMesh) => {
@@ -177,6 +214,7 @@
                 platformDescription.z-platformDescription.depth/2
             );
             world.add(cannonBody1);
+            cannonPlatforms.push(cannonBody1);
     
             let cannonBody2 = new CANNON.Body({ mass: 0 });
             cannonBody2.addShape(cannonShape);
@@ -186,7 +224,8 @@
                 platformDescription.z-(platformDescription.depth + platformDescription.depth/2)
             );
             world.add(cannonBody2);
-    
+            cannonPlatforms.push(cannonBody2);
+            
             floor.sphereLookup.cannonIndex = floor.cannonObjects.length;
             floor.cannonObjects.push(cannonBody);
             floor.platformLookup.uiPlatformIndex = floor.cannonObjects.length;
@@ -215,17 +254,15 @@
         physics.addShapes();
     }
 
+    function setupApi() {
+        const gameDiv = document.getElementById('game');
+        gameDiv.gameApi = gameApi;
+    }
+
     function setupFloor() {
         setView();
         setPhysics();
-        // console.log('setup');
-        // console.log(plaformMeshes);
-        // plaformMeshes.forEach(
-        //     (mesh) => {
-        //       mesh.rotation.x = Math.PI / 2;
-        //     }
-        // );
-
+        setupApi();
     }
 
     function animate() {
@@ -258,6 +295,19 @@
                     sphere.quaternion.w = sphereBody.quaternion.w;
                 }
             );
+console.log(plaformMeshes[0].quaternion.x);
+
+//cannonPlatforms[0].quaternion.x = cannonPlatforms[0].quaternion.x + .0001;
+
+            plaformMeshes.forEach(
+                (mesh) => {
+                    mesh.quaternion.x = cannonPlatforms[0].quaternion.x;
+                    mesh.quaternion.y = cannonPlatforms[0].quaternion.y;
+                    mesh.quaternion.z = cannonPlatforms[0].quaternion.z;
+                    mesh.quaternion.w = cannonPlatforms[0].quaternion.w;
+                }
+            );
+
         }
     }
 

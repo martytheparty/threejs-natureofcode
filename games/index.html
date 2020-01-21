@@ -10,5 +10,20 @@
     <ul>
         <li><a href='labyrinth/index.html'>Labrinth</a>
       </ul>
-</body>
+
+      <script src="libs/components/six-btn-control.js"></script>
+      <control-6button id="c2d"></control-6button>
+      <span id='currentState'></span>
+
+      <script>
+        const ctrl = document.getElementById('c2d');
+        const currentState = document.getElementById('currentState');
+        ctrl.subscribe(
+          (state) => {
+            currentState.innerHTML = state;
+          }
+        );
+      </script>
+
+  </body>
 </html>

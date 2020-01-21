@@ -18,6 +18,7 @@ body {
 
   .loaded .preloader {
     opacity: 0;
+    z-index: 1;
   }
 
   .game {
@@ -45,5 +46,14 @@ body {
 
   td {
     text-align: center;
+  }
+
+  .left, .right {
+    position: relative;
+    top: 10px;
+  }
+  
+  button {
+    z-index: 10
   }
   
