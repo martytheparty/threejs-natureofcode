@@ -28,6 +28,7 @@
     let frontCameraZPosition = 20;
     let leftCameraYPosition = -250;
     let leftCameraZPosition = 20;
+    let ballCamera;
 
     const gameApi = (
         () => {
@@ -145,6 +146,7 @@
                 threeObject.scene.add(sphereMesh);
             }
             threeObject.renderer.setSize(ballElement.width, ballElement.height);
+            ballCamera = threeObject.camera;
             return threeObject;
         },
         getRenderingMesh: (meshDescription) => {
@@ -307,6 +309,12 @@ console.log(plaformMeshes[0].quaternion.x);
                     mesh.quaternion.w = cannonPlatforms[0].quaternion.w;
                 }
             );
+
+            ballCamera.position.x = sphereBody.position.x;
+            ballCamera.position.y = sphereBody.position.y;
+            ballCamera.position.z = sphereBody.position.z;
+            ballCamera.lookAt(new THREE.Vector3(0, 0, 0));
+            
 
         }
     }

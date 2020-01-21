@@ -57,3 +57,9 @@ body {
     z-index: 10
   }
   
+  @media only screen and (max-width: 600px) {
+    control-6button {
+      margin: 10px;
+    }
+  }
+  
