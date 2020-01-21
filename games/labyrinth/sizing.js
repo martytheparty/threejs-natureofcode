@@ -21,11 +21,11 @@ let sizing = () => {
     */
     
     if (smallDimension*4 < 3*height/4) {
-        dimension = dimension * height/(smallDimension*4)*.95;
+        dimension = dimension * height/(smallDimension*4)*.90;
         if (dimension > width) {
-            dimension = width*.35;
+            dimension = width*.3;
         }
-        smallDimension = .333*dimension;
+        smallDimension = .3*dimension;
     }
     
     mainCanvas.width = dimension;
