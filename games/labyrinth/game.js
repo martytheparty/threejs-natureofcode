@@ -1,7 +1,14 @@
-
 ( () => {
     let world;
     const floor = new ThreeDObject();
+    const goal = {
+            width: 10,
+            depth: 10,
+            height: 10,
+            x: 0,
+            y: 0,
+            z: 20
+    };
 
     const platformDescription = {
         width: 150,
@@ -21,6 +28,7 @@
 
     const sphereMeshes = [];
     const plaformMeshes = [];
+    const goalMeshes = [];
     const cannonPlatforms = [];
     const gravity = -100;
     let topCameraPosition = 350;
@@ -32,41 +40,23 @@
 
     const gameApi = (
         () => {
-            console.log('setup API');
             const api = {};
             api.setPosition = (position) => {
-                console.log('API '+position);
-
+                const offset = .01;
                 cannonPlatforms[0].quaternion.y = 0;
                 cannonPlatforms[0].quaternion.x = 0;
-                if(position === "u") {
-                    cannonPlatforms[0].quaternion.y = -.01;
-                } else if (position === "d") {
-                    cannonPlatforms[0].quaternion.y = .01;
-                } else if (position === "l") {
-                    cannonPlatforms[0].quaternion.x = .01;
-                } else if (position === "r") {
-                    cannonPlatforms[0].quaternion.x = -.01;
-                } else if (position === "dl") {
-                    cannonPlatforms[0].quaternion.y = .01;
-                    cannonPlatforms[0].quaternion.x = .01;
-                } else if (position === "ul") {
-                    cannonPlatforms[0].quaternion.y = -.01;
-                    cannonPlatforms[0].quaternion.x = .01;
-                } else if (position === "dr") {
-                    cannonPlatforms[0].quaternion.y = .01;
-                    cannonPlatforms[0].quaternion.x = -.01;
-                } else if (position === "ur") {
-                    cannonPlatforms[0].quaternion.y = -.01;
-                    cannonPlatforms[0].quaternion.x = -.01;
-                }
+                if (position.includes('u')) cannonPlatforms[0].quaternion.y = -1*offset;
+                if (position.includes('d')) cannonPlatforms[0].quaternion.y = offset;
+                if (position.includes('r')) cannonPlatforms[0].quaternion.x = -1*offset;
+                if (position.includes('l')) cannonPlatforms[0].quaternion.x = offset;
+
             };
             return api;
         }
     )();
 
     const view = {
-        createMainView: (mesh, sphereMesh) => {
+        createMainView: (mesh, sphereMesh, goalMesh) => {
             let mainElement = document.getElementById('main');
             let threeObject = {
                 element: mainElement,
@@ -81,11 +71,13 @@
             if (sphereMesh) {
                 threeObject.scene.add(sphereMesh);
             }
+            if (goalMesh) {
+                threeObject.scene.add(goalMesh);
+            }
             threeObject.renderer.setSize(mainElement.width, mainElement.height);
             return threeObject;
         },
-
-        createFrontView: (mesh, sphereMesh) => {
+        createFrontView: (mesh, sphereMesh, goalMesh) => {
             let frontElement = document.getElementById('front');
             let threeObject = {
                 element: frontElement,
@@ -102,12 +94,13 @@
             if (sphereMesh) {
                 threeObject.scene.add(sphereMesh);
             }
-    
+            if (goalMesh) {
+                threeObject.scene.add(goalMesh);
+            }
             threeObject.renderer.setSize(frontElement.width, frontElement.height);
             return threeObject;
         },
-
-        createLeftView: (mesh, sphereMesh) => {
+        createLeftView: (mesh, sphereMesh, goalMesh) => {
             let leftElement = document.getElementById('left');
             let threeObject = {
                 element: leftElement,
@@ -124,11 +117,13 @@
             if (sphereMesh) {
                 threeObject.scene.add(sphereMesh);
             }
+            if (goalMesh) {
+                threeObject.scene.add(goalMesh);
+            }
             threeObject.renderer.setSize(leftElement.width, leftElement.height);
             return threeObject;
         },
-
-        createBallView: (mesh, sphereMesh) => {
+        createBallView: (mesh, sphereMesh, goalMesh) => {
             let ballElement = document.getElementById('ball');
             let threeObject = {
                 element: ballElement,
@@ -145,6 +140,9 @@
             if (sphereMesh) {
                 threeObject.scene.add(sphereMesh);
             }
+            if (goalMesh) {
+                threeObject.scene.add(goalMesh);
+            }
             threeObject.renderer.setSize(ballElement.width, ballElement.height);
             ballCamera = threeObject.camera;
             return threeObject;
@@ -154,7 +152,7 @@
             mesh.position.set(meshDescription.x, meshDescription.y, meshDescription.z);
             return mesh;
         },
-        createViews: (meshDescription, sphereMeshDescription) => {
+        createViews: (meshDescription, sphereMeshDescription, goalMeshDescription) => {
             sphereMeshes.push(view.getRenderingMesh(sphereMeshDescription));
             sphereMeshes.push(view.getRenderingMesh(sphereMeshDescription));
             sphereMeshes.push(view.getRenderingMesh(sphereMeshDescription));
@@ -164,16 +162,20 @@
             plaformMeshes.push(view.getRenderingMesh(meshDescription));
             plaformMeshes.push(view.getRenderingMesh(meshDescription));
             plaformMeshes.push(view.getRenderingMesh(meshDescription));
+
+            goalMeshes.push(view.getRenderingMesh(goalMeshDescription));
+            goalMeshes.push(view.getRenderingMesh(goalMeshDescription));
+            goalMeshes.push(view.getRenderingMesh(goalMeshDescription));
+            goalMeshes.push(view.getRenderingMesh(goalMeshDescription));
 
             const views = [];
-            views.push(view.createMainView(plaformMeshes[0], sphereMeshes[0]));
-            views.push(view.createFrontView(plaformMeshes[1], sphereMeshes[1]));
-            views.push(view.createLeftView(plaformMeshes[2], sphereMeshes[2]));
-            views.push(view.createBallView(plaformMeshes[3], sphereMeshes[3]));
+            views.push(view.createMainView(plaformMeshes[0], sphereMeshes[0], goalMeshes[0]));
+            views.push(view.createFrontView(plaformMeshes[1], sphereMeshes[1], goalMeshes[1]));
+            views.push(view.createLeftView(plaformMeshes[2], sphereMeshes[2], goalMeshes[2]));
+            views.push(view.createBallView(plaformMeshes[3], sphereMeshes[3], goalMeshes[3]));
             return views;
         }
     }
-
     const physics = {
         createWorld : () => {
             world = new CANNON.World();
@@ -196,9 +198,7 @@
             const cannonSphere = new CANNON.Sphere(
                 sphereDescription.radius
             );
-            const cannonBody = new CANNON.Body({ mass: 10000 }, material);
-    
-    
+            const cannonBody = new CANNON.Body({ mass: 10000 }, material);    
             cannonBody.addShape(cannonSphere);
             cannonBody.position.set(
                 sphereDescription.x,
@@ -206,7 +206,6 @@
                 sphereDescription.z
             );
             world.add(cannonBody);
-    
             let cannonShape = new CANNON.Box(new CANNON.Vec3(platformDescription.width, platformDescription.height, platformDescription.depth));
             let cannonBody1 = new CANNON.Body({ mass: 0 });
             cannonBody1.addShape(cannonShape);
@@ -217,7 +216,6 @@
             );
             world.add(cannonBody1);
             cannonPlatforms.push(cannonBody1);
-    
             let cannonBody2 = new CANNON.Body({ mass: 0 });
             cannonBody2.addShape(cannonShape);
             cannonBody2.position.set(
@@ -227,7 +225,6 @@
             );
             world.add(cannonBody2);
             cannonPlatforms.push(cannonBody2);
-            
             floor.sphereLookup.cannonIndex = floor.cannonObjects.length;
             floor.cannonObjects.push(cannonBody);
             floor.platformLookup.uiPlatformIndex = floor.cannonObjects.length;
@@ -235,20 +232,24 @@
             floor.platformLookup.rotatePlatformIndex = floor.cannonObjects.length;
             floor.cannonObjects.push(cannonBody2);
         }
-
     }
 
     function setView() {
         const geometry = new THREE.BoxGeometry(platformDescription.width*2, platformDescription.height*2, platformDescription.depth*2);
+        const goalGeometry = new THREE.BoxGeometry(goal.width*2, goal.height*2, goal.depth*2);
         const material = new THREE.MeshBasicMaterial({ color: 0xC19A6B });
+        const goalMaterial = new THREE.MeshBasicMaterial({ color: 0x228b22 });
         const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
         const meshDescription = { geometry, material, x: 0, y: 0, z: 0 };
+        const goalDescription = { goalGeometry, goalMaterial, x: goal.x, y: goal.y, z: goal.z };
         sphereGeometry = new THREE.SphereGeometry(sphereDescription.radius, sphereDescription.sides, sphereDescription.sides);
         const sphereMeshDescription = { geometry: sphereGeometry, material: sphereMaterial, x: sphereDescription.x, y: sphereDescription.y, z: sphereDescription.z };    
+        const goalMeshDescription = { geometry: goalGeometry, material: goalMaterial, x: goalDescription.x, y: goalDescription.y, z: goalDescription.z };
         floor.sphereLookup.threeIndex = floor.threeObjects.length;
         floor.threeObjects.push(sphereGeometry);
         floor.threeObjects.push(meshDescription);
-        floor.layers = view.createViews(meshDescription, sphereMeshDescription);
+        floor.threeObjects.push(goalDescription);
+        floor.layers = view.createViews(meshDescription, sphereMeshDescription, goalMeshDescription);
     }
 
     function setPhysics() {
@@ -284,23 +285,17 @@
         if (floor.cannonObjects && floor.cannonObjects.length > 0) {
             world.step(1/30);
             const sphereBody = floor.cannonObjects[floor.sphereLookup.cannonIndex];
-
             sphereMeshes.forEach(
                 (sphere) => {
                     sphere.position.x = sphereBody.position.x;
                     sphere.position.y = sphereBody.position.y;
                     sphere.position.z = sphereBody.position.z;
-
                     sphere.quaternion.x = sphereBody.quaternion.x;
                     sphere.quaternion.y = sphereBody.quaternion.y;
                     sphere.quaternion.z = sphereBody.quaternion.z;
                     sphere.quaternion.w = sphereBody.quaternion.w;
                 }
             );
-console.log(plaformMeshes[0].quaternion.x);
-
-//cannonPlatforms[0].quaternion.x = cannonPlatforms[0].quaternion.x + .0001;
-
             plaformMeshes.forEach(
                 (mesh) => {
                     mesh.quaternion.x = cannonPlatforms[0].quaternion.x;
@@ -309,16 +304,12 @@ console.log(plaformMeshes[0].quaternion.x);
                     mesh.quaternion.w = cannonPlatforms[0].quaternion.w;
                 }
             );
-
             ballCamera.position.x = sphereBody.position.x;
             ballCamera.position.y = sphereBody.position.y;
             ballCamera.position.z = sphereBody.position.z;
             ballCamera.lookAt(new THREE.Vector3(0, 0, 0));
-            
-
         }
     }
-
     setupFloor();
     let layers = [];
     layers.push(floor);
