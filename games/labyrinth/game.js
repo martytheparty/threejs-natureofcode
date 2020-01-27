@@ -7,7 +7,8 @@
             height: 10,
             x: 0,
             y: 0,
-            z: 20
+            z: 20,
+            found: false
     };
 
     const platformDescription = {
@@ -37,6 +38,7 @@
     let leftCameraYPosition = -250;
     let leftCameraZPosition = 20;
     let ballCamera;
+    let win = false;
 
     const gameApi = (
         () => {
@@ -234,11 +236,31 @@
         }
     }
 
+    const CollisionDetection = {
+        checkForCollision: () => {
+            const sphereBody = floor.cannonObjects[floor.sphereLookup.cannonIndex];
+            const goalX = goal.x - sphereBody.position.x;
+            const goalY = goal.y - sphereBody.position.y;
+            const sphere = new SAT.Circle(new SAT.Vector(), sphereBody.boundingRadius);
+            const goalSquare = new SAT.Polygon(new SAT.Vector(goalX, goalY), [
+            new SAT.Vector(goal.depth, goal.width),
+            new SAT.Vector(-1*goal.depth, goal.width),
+            new SAT.Vector(-1*goal.depth, -1*goal.width),
+            new SAT.Vector(goal.depth, -1*goal.width)
+           ]);
+
+           var response = new SAT.Response();
+           var collided = SAT.testPolygonCircle(goalSquare, sphere, response);
+           return collided;
+
+        }
+    }
+
     function setView() {
         const geometry = new THREE.BoxGeometry(platformDescription.width*2, platformDescription.height*2, platformDescription.depth*2);
         const goalGeometry = new THREE.BoxGeometry(goal.width*2, goal.height*2, goal.depth*2);
         const material = new THREE.MeshBasicMaterial({ color: 0xC19A6B });
-        const goalMaterial = new THREE.MeshBasicMaterial({ color: 0x228b22 });
+        const goalMaterial = new THREE.MeshBasicMaterial({ color: 0x8b2222 });
         const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
         const meshDescription = { geometry, material, x: 0, y: 0, z: 0 };
         const goalDescription = { goalGeometry, goalMaterial, x: goal.x, y: goal.y, z: goal.z };
@@ -267,9 +289,18 @@
         setPhysics();
         setupApi();
     }
-
     function animate() {
         requestAnimationFrame(animate);
+        if (!win && CollisionDetection.checkForCollision()) {
+            goalMeshes.forEach(
+                (goalMesh) => {
+                    goalMesh.material.color.r = 0;
+                    goalMesh.material.color.b = 1;
+                }
+            );
+            win = true;
+        }
+
         layers.forEach(
             (layer, index) => {
                 layer.layers.forEach(
