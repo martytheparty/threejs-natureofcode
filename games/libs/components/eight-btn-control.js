@@ -1,4 +1,4 @@
-class Control6B extends HTMLElement {
+class Control8B extends HTMLElement {
     ele = document.createElement('div');
     subscribers = [];
     currentState = '';
@@ -76,4 +76,4 @@ class Control6B extends HTMLElement {
 
 }
 
-customElements.define('control-6button', Control6B);
+customElements.define('control-8button', Control8B);
