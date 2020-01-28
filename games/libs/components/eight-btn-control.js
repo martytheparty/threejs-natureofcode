@@ -3,11 +3,14 @@ class Control8B extends HTMLElement {
     subscribers = [];
     currentState = '';
     buttons = {};
+    keys = {};
 
     constructor() {
         super();
         this.ele.style.textAlign = 'center';
         this.createUi();
+        document.addEventListener('keydown', this.keydownHandler);
+        document.addEventListener('keyup', this.keyupHandler);
     }
 
     createUi() {
@@ -38,7 +41,7 @@ class Control8B extends HTMLElement {
         } else  {
             button.style.position = 'relative';
         }
-        button.onclick = this.publish;
+        button.onclick = this.clickHandler;
         this.buttons[label] = button;
         return button;
     }
@@ -51,21 +54,76 @@ class Control8B extends HTMLElement {
         this.subscribers.push(callback);
     }
 
+    clearState = () => {
+        this.currentState = '';
+        for (let prop in this.buttons) {
+            this.buttons[prop].style.color = '#000000'; 
+        }       
+    }
 
+    updateState = () => {
 
-    publish = (event) => {
+        for (let prop in this.buttons) {
+            this.buttons[prop].style.color = '#000000'; 
+        }
 
-        if (event.target.value === this.currentState) {
-            this.currentState = '';
-            this.buttons[event.target.value].style.color = '#000000';
+        if (this.currentState === '') {
+            this.clearState();
         } else {
             if (this.buttons[this.currentState]) {
-                this.buttons[this.currentState].style.color = '#000000';
+                this.buttons[this.currentState].style.color = '#FF0000';
+            } else {
+                this.clearState();
             }
-
-            this.currentState = event.target.value;
-            this.buttons[this.currentState].style.color = '#FF0000';
         }
+
+
+    }
+
+    clickHandler = (event) => {
+        if (this.currentState === event.target.value) {
+            this.currentState = "";
+        } else {
+            this.currentState = event.target.value;
+        }
+
+        this.updateState();
+        this.publish();
+    }
+
+    keydownHandler = (event) => {
+        this.keys[event.key] = true;
+        this.keyStateChange();
+    }
+
+    keyupHandler = (event) => {
+        this.keys[event.key] = false;
+        this.keyStateChange();
+    }
+
+    keyStateChange = () => {
+        this.currentState = '';
+        if(this.keys['ArrowUp']) {
+            this.currentState = this.currentState + 'u';
+        }
+
+        if(this.keys['ArrowDown']) {
+            this.currentState = this.currentState + 'd';
+        }
+
+        if(this.keys['ArrowLeft']) {
+            this.currentState = this.currentState + 'l';
+        }
+
+        if(this.keys['ArrowRight']) {
+            this.currentState = this.currentState + 'r';
+        }
+
+        this.updateState();
+        this.publish();
+    }
+
+    publish = () => {
         
         this.subscribers.forEach(
             (subscriber) => {
