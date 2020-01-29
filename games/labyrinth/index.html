@@ -18,6 +18,7 @@
                 <table style="margin: auto;">
                     <tr>
                         <td colspan="3">
+                            <div id="status" class="status">PLAYING</div>
                             <canvas id="main"></canvas>
                         </td>
                     </tr>
@@ -43,11 +44,20 @@
             document.getElementById("body").classList.add("loaded");
             const ctrl = document.getElementById('c2d');
             const game = document.getElementById('game');
+            let currentState = 'playing';
             ctrl.subscribe(
             (state) => {
                 game.gameApi.setPosition(state);
             }
-        );
+            );
+            game.gameApi.addSubscription(
+                (win) => {
+                    if (win && currentState === 'playing') {
+                        currentState = 'win';
+                        document.getElementById('status').innerHTML = 'win';
+                    }
+                } 
+            );
         </script>
 
     </body>

@@ -39,6 +39,7 @@
     let leftCameraZPosition = 20;
     let ballCamera;
     let win = false;
+    let subscriptions = [];
 
     const gameApi = (
         () => {
@@ -53,6 +54,9 @@
                 if (position.includes('l')) cannonPlatforms[0].quaternion.x = offset;
 
             };
+            api.addSubscription = (callback) => {
+                subscriptions.push(callback);
+            }
             return api;
         }
     )();
@@ -289,6 +293,15 @@
         setPhysics();
         setupApi();
     }
+    checkStatus = () => {
+        if(win) {
+            subscriptions.forEach(
+                (subscription) => {
+                    subscription(win);
+                }
+            );
+        }
+    }
     function animate() {
         requestAnimationFrame(animate);
         if (!win && CollisionDetection.checkForCollision()) {
@@ -300,6 +313,8 @@
             );
             win = true;
         }
+
+        checkStatus();
 
         layers.forEach(
             (layer, index) => {
