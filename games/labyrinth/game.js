@@ -39,6 +39,8 @@
     let leftCameraZPosition = 20;
     let ballCamera;
     let win = false;
+    let lose = false;
+    let done = false;
     let subscriptions = [];
 
     const gameApi = (
@@ -56,6 +58,9 @@
             };
             api.addSubscription = (callback) => {
                 subscriptions.push(callback);
+            }
+            api.reset = () => {
+                document.location.reload();
             }
             return api;
         }
@@ -294,10 +299,29 @@
         setupApi();
     }
     checkStatus = () => {
-        if(win) {
+
+        if (!done) {
+            const sphereBody = floor.cannonObjects[floor.sphereLookup.cannonIndex];
+            if (sphereBody.position.z < 0) {
+                console.log('LOSE');
+                lose = true;
+            }
+        }
+
+
+        if(win && !done) {
+            done = true;
             subscriptions.forEach(
                 (subscription) => {
-                    subscription(win);
+                    subscription('win');
+                }
+            );
+        } else if (lose && !done) {
+            console.log('LOSE');
+            done = true;
+            subscriptions.forEach(
+                (subscription) => {
+                    subscription('lose');
                 }
             );
         }

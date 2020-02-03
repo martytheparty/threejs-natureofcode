@@ -19,6 +19,9 @@
                     <tr>
                         <td colspan="3">
                             <div id="status" class="status">PLAYING</div>
+                            <div id="agent" class="agent">
+                                AGENT <span id='agent-state'></span>
+                            </div>
                             <canvas id="main"></canvas>
                         </td>
                     </tr>
@@ -39,6 +42,7 @@
         <script src="../libs/sat/SAT.js"></script>
         <script src="../libs/custom/objects.js"></script>
         <script src="game.js"></script>
+        <script src="agent.js"></script>
 
         <script>
             document.getElementById("body").classList.add("loaded");
@@ -51,13 +55,49 @@
             }
             );
             game.gameApi.addSubscription(
-                (win) => {
-                    if (win && currentState === 'playing') {
-                        currentState = 'win';
-                        document.getElementById('status').innerHTML = 'win';
+                (result) => {
+                    if (result != currentState) {
+                        currentState = result;
+                        document.getElementById('status').innerHTML = result + ' [click to restart]';
                     }
                 } 
             );
+            document.getElementById("status").onclick = () => {
+                game.gameApi.reset();
+            }
+
+            const agent = getAgent();
+            agent.register(
+                (move) => {
+                    if(currentState !== 'playing') {
+                        game.gameApi.reset();
+                    } else {
+                        ctrl.aiHandler(move);
+                    }
+
+                }
+            );
+
+            let agentStatus = document.getElementById('agent-state');
+
+            document.getElementById("agent").onclick = () => {
+                if (agent.isRunning()) {
+                    agentStatus.innerHTML = 'Off';
+                    agent.stopRunning();
+                } else {
+                    agentStatus.innerHTML = 'On';
+                    agent.startRunning();
+                    agent.play();
+                }
+
+            }
+
+            agentStatus.innerHTML = 'Off';
+            if (agent.isRunning()) {
+                agent.play();
+                agentStatus.innerHTML = 'On';
+            }
+
         </script>
 
     </body>

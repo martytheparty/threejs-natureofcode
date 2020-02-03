@@ -76,8 +76,12 @@ class Control8B extends HTMLElement {
                 this.clearState();
             }
         }
+    }
 
-
+    aiHandler = (move) => {
+        this.currentState = move;
+        this.updateState();
+        this.publish();
     }
 
     clickHandler = (event) => {
