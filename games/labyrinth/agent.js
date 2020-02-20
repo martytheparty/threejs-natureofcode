@@ -1,10 +1,20 @@
 let getAgent = () => {
 
     const agent = {
-        game: {},
+        replayValues: [],
+        replayIndex: 0,
+        game: { moves: [], win: false },
         moves: ['l', 'ul', 'u', 'ur', 'r', 'dl', 'd', 'dr'],
         finished: false,
         subscribers: [],
+        getWinningGames: () => {
+            const ls = window.localStorage;
+            let gameString = ls.getItem('games');
+            if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
+            let games = JSON.parse(gameString);
+            games.count = agent.getCount();
+            return games;
+        },
         addGame: () => {
             agent.game = {}
         },
@@ -16,7 +26,8 @@ let getAgent = () => {
         },
         saveGame: () => {
             const ls = window.localStorage;
-            const gamesString = ls.getItem('games');
+            let gameString = ls.getItem('games');
+            if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
             let games = JSON.parse(gameString);
             if (!games.length) {
                 games = [];
@@ -35,14 +46,34 @@ let getAgent = () => {
             return moves[randomPosition];
         },
         winHandler: () => {
+            agent.game.win = true;
+            agent.game.count = agent.getCount();
+            agent.saveGame();
+            console.log(agent);
+            //alert('win');
             console.log('win');
         },
         loseHandler: () => {
             console.log('lose');
         },
+        getCount: () => {
+            const ls = window.localStorage;
+            let gameCount = ls.getItem('count');
+            if (gameCount === null || typeof gameCount === 'undefined') gameCount = "0";
+            return gameCount
+        },
+        incrementCount: () => {
+            const ls = window.localStorage;
+            let gameCount = agent.getCount();
+            gameCount++;
+            ls.setItem('count', gameCount);
+
+        },
         play: () => {
+            agent.incrementCount();
             let move = agent.getMove(agent.moves);
-            console.log('do you want to play a game? ' + move);
+            agent.game.moves.push(move);
+            // console.log('do you want to play a game? ' + move);
             agent.subscribers.forEach(
                 (callback) => {
                     callback(move);
@@ -51,6 +82,19 @@ let getAgent = () => {
             setTimeout(() => {
                 agent.play();
             }, 2000);
+        },
+        replay: () => {
+            agent.subscribers.forEach(
+                (callback) => {
+                    callback(agent.replayValues[agent.replayIndex]);
+                    agent.replayIndex++;
+                }
+            );
+
+            setTimeout(() => {
+                agent.replay();
+            }, 2000);
+
         },
         register: (callback) => {
             agent.subscribers.push(callback);

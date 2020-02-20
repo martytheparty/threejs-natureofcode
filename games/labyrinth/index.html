@@ -18,9 +18,12 @@
                 <table style="margin: auto;">
                     <tr>
                         <td colspan="3">
+                            <div id="moves"></div>
                             <div id="status" class="status">PLAYING</div>
                             <div id="agent" class="agent">
-                                AGENT <span id='agent-state'></span>
+                                <div onclick="toggleAgent()">AGENT <span id='agent-state'></span></div onclick="showWins()">
+                                <div onclick="showWins()">WINS <span id='agent-wins'></span></div>
+                                <div id='agent-wins-list'></div>
                             </div>
                             <canvas id="main"></canvas>
                         </td>
@@ -70,6 +73,10 @@
             agent.register(
                 (move) => {
                     if(currentState !== 'playing') {
+                        if (currentState === 'win') {
+                            agent.winHandler();
+                        }
+
                         game.gameApi.reset();
                     } else {
                         ctrl.aiHandler(move);
@@ -79,24 +86,64 @@
             );
 
             let agentStatus = document.getElementById('agent-state');
+            let agentWins = document.getElementById('agent-wins');
 
-            document.getElementById("agent").onclick = () => {
+ 
+            //agentStatus.innerHTML = 'Off';
+
+            //console.log('WINNING GAME...');
+            agentWins.innerHTML = `${agent.getWinningGames().length} of ${agent.getWinningGames().count}`;
+            //console.log(agent.getWinningGames());
+            let showWins = () => {
+                const winDiv = document.getElementById('agent-wins-list');
+                winDiv.innerHTML = '';
+                agent.getWinningGames().forEach(
+                    (game) => {
+                        let ele = document.createElement('div');
+                        const movesEle = document.getElementById("moves");
+                        
+                        ele.innerHTML = game.moves.length + ' moves';
+                        ele.onclick = () => {
+                            movesEle.innerHTML = '';
+                            movesEle.style = 'display:block';
+                            game.moves.forEach(
+                                (move) => {
+                                    movesEle.innerHTML = movesEle.innerHTML + move + '<br>';
+                                }
+                            );
+                            const playEle = document.createElement('div');
+                            playEle.style = 'cursor:pointer';
+                            playEle.onclick = () => {
+                                agent.replayValues = game.moves;
+                                agent.replay();
+                            }
+                            playEle.innerHTML = 'play';
+                            movesEle.append(playEle);
+                        };
+                        //movesEle.innerHTML = movesEle.innerHTML + '<span>play</span>'
+                        winDiv.append(ele);
+                    }
+                );
+            };
+            let toggleAgent = () => {
                 if (agent.isRunning()) {
+                    agent.stopRunning();                    
                     agentStatus.innerHTML = 'Off';
-                    agent.stopRunning();
                 } else {
-                    agentStatus.innerHTML = 'On';
                     agent.startRunning();
                     agent.play();
+                    agentStatus.innerHTML = 'On';
                 }
-
             }
 
-            agentStatus.innerHTML = 'Off';
             if (agent.isRunning()) {
-                agent.play();
                 agentStatus.innerHTML = 'On';
+                agent.startRunning();
+                agent.play();
+            } else {
+                agentStatus.innerHTML = 'Off';
             }
+
 
         </script>
 

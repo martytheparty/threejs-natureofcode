@@ -72,6 +72,15 @@ body {
     z-index: 2;
     top: 30px;
     cursor: pointer;
+    text-align: left;
+  }
+
+  #moves {
+    position: absolute;
+    z-index: 10;
+    background-color: beige;
+    padding: 3px;
+    display: none;
   }
   
   @media only screen and (max-width: 600px) {

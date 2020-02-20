@@ -303,7 +303,7 @@
         if (!done) {
             const sphereBody = floor.cannonObjects[floor.sphereLookup.cannonIndex];
             if (sphereBody.position.z < 0) {
-                console.log('LOSE');
+                //console.log('LOSE');
                 lose = true;
             }
         }
@@ -317,7 +317,7 @@
                 }
             );
         } else if (lose && !done) {
-            console.log('LOSE');
+            // console.log('LOSE');
             done = true;
             subscriptions.forEach(
                 (subscription) => {
