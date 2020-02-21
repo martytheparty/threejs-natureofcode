@@ -69,8 +69,8 @@ let getAgent = () => {
             ls.setItem('count', gameCount);
 
         },
-        play: () => {
-            agent.incrementCount();
+        play: (first) => {
+            if (first) agent.incrementCount();
             let move = agent.getMove(agent.moves);
             agent.game.moves.push(move);
             // console.log('do you want to play a game? ' + move);

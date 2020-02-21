@@ -131,7 +131,7 @@
                     agentStatus.innerHTML = 'Off';
                 } else {
                     agent.startRunning();
-                    agent.play();
+                    agent.play(true);
                     agentStatus.innerHTML = 'On';
                 }
             }
@@ -139,7 +139,7 @@
             if (agent.isRunning()) {
                 agentStatus.innerHTML = 'On';
                 agent.startRunning();
-                agent.play();
+                agent.play(true);
             } else {
                 agentStatus.innerHTML = 'Off';
             }
