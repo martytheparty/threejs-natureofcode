@@ -48,7 +48,9 @@ let getAgent = () => {
         winHandler: () => {
             agent.game.win = true;
             agent.game.count = agent.getCount();
-            agent.saveGame();
+            if (replayValues.length === 0) {
+                agent.saveGame();
+            }
             console.log(agent);
             //alert('win');
             console.log('win');
