@@ -48,8 +48,8 @@ let getAgent = () => {
         winHandler: () => {
             agent.game.win = true;
             agent.game.count = agent.getCount();
-            if (replayValues.length === 0) {
-                agent.saveGame();
+            if (agent.replayValues.length === 0) {
+                agent.saveGame(); 
             }
             console.log(agent);
             //alert('win');
@@ -72,6 +72,7 @@ let getAgent = () => {
 
         },
         play: (first) => {
+            agent.replayValues = [];
             if (first) agent.incrementCount();
             let move = agent.getMove(agent.moves);
             agent.game.moves.push(move);
