@@ -73,7 +73,6 @@
             agent.register(
                 (move) => {
                     if(currentState !== 'playing') {
-                        agent.saveHistory(currentState);
                         if (currentState === 'win') {
                             agent.winHandler();
                         }

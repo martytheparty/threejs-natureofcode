@@ -9,7 +9,7 @@ let getAgent = () => {
         subscribers: [],
         getWinningGames: () => {
             const ls = window.localStorage;
-            let gameString = ls.getItem('games2');
+            let gameString = ls.getItem('games3');
             if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
             let games = JSON.parse(gameString);
             games.count = agent.getCount();
@@ -26,7 +26,7 @@ let getAgent = () => {
         },
         saveGame: () => {
             const ls = window.localStorage;
-            let gameString = ls.getItem('games2');
+            let gameString = ls.getItem('games3');
             if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
             let games = JSON.parse(gameString);
             if (!games.length) {
@@ -34,7 +34,7 @@ let getAgent = () => {
             }
             games.push(agent.game);
             const str = JSON.stringify(games);
-            ls.setItem('games2', str);
+            ls.setItem('games', str);
 
         },
         getGames: () => {
@@ -51,74 +51,17 @@ let getAgent = () => {
             if (agent.replayValues.length === 0) {
                 agent.saveGame(); 
             }
-            agent.saveHistory(true);
             console.log(agent);
             //alert('win');
             console.log('win');
         },
         loseHandler: () => {
-            agent.saveHistory(false);
             console.log('lose');
         },
         getCount: () => {
             const ls = window.localStorage;
             let gameCount = ls.getItem('count2');
             if (gameCount === null || typeof gameCount === 'undefined') gameCount = "0";
-
-
-            let gameString = ls.getItem('gameResults2');
-
-            let games = JSON.parse(gameString) || [];
-
-            let totalHealth = 0;
-            let highest = 0;
-            let lowest = 1000;
-            let sorted = [];
-            let topTen = [];
-
-            games.forEach(
-                (game) => {
-                    //console.log('health',game.moves.length);
-                    totalHealth = totalHealth + game.moves.length;
-                    if (highest < game.moves.length) highest = game.moves.length; 
-                    if (lowest > game.moves.length) lowest = game.moves.length;                    
-                    sorted.push(game.moves); 
-                }
-            );
-            sorted.sort(
-                (moves1, moves2) => {
-                    if(moves1.length < moves2.length) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                }
-            );
-
-
-            sorted.forEach(
-                (moves, count) => {
-                    if (count < 10) {
-                        topTen.push(moves);
-                    }
-                }
-            );
-
-            console.log('************************');
-            console.log('games played: ', games.length);
-            console.log('total health: ', totalHealth);
-            console.log('average health: ', totalHealth/ games.length);
-            console.log('highest', highest);
-            console.log('lowest', lowest);
-            console.log('top ten', topTen);
-            console.table(topTen);
-            console.log('************************');
-
-            //const ls = window.localStorage;
-            let gameData = ls.getItem('games2Generation');
-            //gameData
-
-
             return gameCount
         },
         incrementCount: () => {
@@ -133,7 +76,7 @@ let getAgent = () => {
             if (first) agent.incrementCount();
             let move = agent.getMove(agent.moves);
             agent.game.moves.push(move);
-
+            // console.log('do you want to play a game? ' + move);
             agent.subscribers.forEach(
                 (callback) => {
                     callback(move);
@@ -191,30 +134,6 @@ let getAgent = () => {
             d.setTime(d.getTime() + (days*24*60*60*1000));
             var expires = "expires="+ d.toUTCString();
             document.cookie = "agentrunning=false" + ";" + expires + ";path=/";
-        },
-        saveHistory: (win) => {
-
-            let game = { 
-                result: win, 
-                moves: agent.game.moves 
-            };
-
-            const ls = window.localStorage;
-            let gameString = ls.getItem('gameResults2');
-
-            let games = JSON.parse(gameString) || [];
-
-            if (games.length > 99) {
-                //alert('Find Healthiest');
-
-                games = [];
-
-            }
-
-            games.push(game);
-
-            ls.setItem('gameResults2', JSON.stringify(games));
-
         }
     }
     return agent;
