@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Local Storage Data</title>
+        <script src="../../libs/components/history-table.js"></script>
+        <script src="../../libs/components/game-results.js"></script>
+        <script src="../../libs/components/healthiest-table.js"></script>
+    </head>
+    <body>
+        <table>
+            <tr><td>History Table Name</td><td><input type="input" id="history" value="history3"></td></tr>
+            <tr><td>Queue Table Name</td><td><input type="input" id="pQueue" value="pQueue3"></td></tr>
+            <tr><td>Game Name</td><td><input type="input" id="game" value="gameResults3"></td></tr>
+            <tr><td colspan="=2"><button id="update-button">Update</button></td></tr>
+        </table>
+        <h2>Show Local Storage Data.</h2>
+        <h3>Healthiest Table</h3>
+        <div>
+            <healthiest-table></healthiest-table>
+        </div>
+
+        <h3>Games Table</h3>
+        <div>
+            <games-table></games-table>
+        </div>
+
+        <h3>History Table</h3>
+        <div>
+            <history-table></history-table>
+        </div>
+
+        <div>
+            <p id="data"></p>
+            <script src="data.js"></script>
+        </div>
+    </body>
+</html>

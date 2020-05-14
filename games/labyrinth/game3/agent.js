@@ -1,15 +1,30 @@
 let getAgent = () => {
 
     const agent = {
+        localStorageGameName: 'games3',
+        localStorageHistory: 'history3',
+        localStorageCount: 'count3',
+        localStorageResults: 'gameResults3',
+        localStorageQueue: "pQueue3",
+        playQueue: [],
         replayValues: [],
         replayIndex: 0,
         game: { moves: [], win: false },
         moves: ['l', 'ul', 'u', 'ur', 'r', 'dl', 'd', 'dr'],
         finished: false,
         subscribers: [],
+        history: undefined,
+        setHistory: () => {
+            if (!Array.isArray(agent.history)) {
+                const ls = window.localStorage;
+                let historyString = ls.getItem(agent.localStorageHistory);
+                let history = JSON.parse(historyString) || [];
+                agent.history = history;
+            }
+        },
         getWinningGames: () => {
             const ls = window.localStorage;
-            let gameString = ls.getItem('games3');
+            let gameString = ls.getItem(localStorage);
             if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
             let games = JSON.parse(gameString);
             games.count = agent.getCount();
@@ -26,7 +41,7 @@ let getAgent = () => {
         },
         saveGame: () => {
             const ls = window.localStorage;
-            let gameString = ls.getItem('games3');
+            let gameString = ls.getItem(agent.localStorageGameName);
             if (gameString === null || typeof gameString === 'undefined') gameString = "[]";
             let games = JSON.parse(gameString);
             if (!games.length) {
@@ -34,16 +49,23 @@ let getAgent = () => {
             }
             games.push(agent.game);
             const str = JSON.stringify(games);
-            ls.setItem('games', str);
+            ls.setItem(agent.localStorageGameName, str);
 
         },
         getGames: () => {
             const ls = window.localStorage;
             return [];
         },
-        getMove: (moves) => {            
-            const randomPosition = Math.floor(Math.random()*(moves.length - 1))
-            return moves[randomPosition];
+        getMove: (moves) => {      
+            let nextPosition = Math.floor(Math.random()*(moves.length - 1))
+            let move = moves[nextPosition];
+
+            if (agent.playQueue.length > 0) {
+                move = agent.playQueue.shift();
+            }
+
+            agent.setHistory();
+            return move;
         },
         winHandler: () => {
             agent.game.win = true;
@@ -51,32 +73,115 @@ let getAgent = () => {
             if (agent.replayValues.length === 0) {
                 agent.saveGame(); 
             }
-            console.log(agent);
-            //alert('win');
-            console.log('win');
+            agent.saveHistory(true);
         },
         loseHandler: () => {
-            console.log('lose');
+            agent.saveHistory(false);
         },
         getCount: () => {
             const ls = window.localStorage;
-            let gameCount = ls.getItem('count2');
+            let gameCount = ls.getItem(agent.localStorageCount);
             if (gameCount === null || typeof gameCount === 'undefined') gameCount = "0";
+
+            let gameString = ls.getItem(agent.localStorageResults);
+            let games = JSON.parse(gameString) || [];
+
+            let totalHealth = 0;
+            let highest = 0;
+            let lowest = 1000;
+            let sorted = [];
+            let topTen = [];
+
+            games.forEach(
+                (game) => {
+                    //console.log('health',game.moves.length);
+                    totalHealth = totalHealth + game.moves.length;
+                    if (highest < game.moves.length) highest = game.moves.length; 
+                    if (lowest > game.moves.length) lowest = game.moves.length;                    
+                    sorted.push(game.moves); 
+                }
+            );
+            sorted.sort(
+                (moves1, moves2) => {
+                    if(moves1.length < moves2.length) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            );
+
+
+            sorted.forEach(
+                (moves, count) => {
+                    if (count < 10) {
+                        topTen.push(moves);
+                    }
+                }
+            );
+
+            // console.log('************************');
+            // console.log('games played: ', games.length);
+            // console.log('total health: ', totalHealth);
+            // console.log('average health: ', totalHealth/ games.length);
+            // console.log('highest', highest);
+            // console.log('lowest', lowest);
+            // console.log('top ten', topTen);
+            // console.table(topTen);
+            // console.log('************************');
+
+            //const ls = window.localStorage;
+            // let gameData = ls.getItem('games2Generation');
+            //gameData
+
+
             return gameCount
         },
         incrementCount: () => {
             const ls = window.localStorage;
             let gameCount = agent.getCount();
             gameCount++;
-            ls.setItem('count2', gameCount);
+            ls.setItem(agent.localStorageCount, gameCount);
 
         },
         play: (first) => {
+
+
+            if (first) {
+                const ls = window.localStorage;
+                const queue = ls.getItem(agent.localStorageQueue);
+                console.log(`***** ${agent.localStorageQueue} *****`);
+
+                if (queue && queue.length > 0) {
+                    //console.table(JSON.parse(queue));
+                    const queueItem = JSON.parse(queue);
+                    queueItem.forEach(
+                        (game) => {
+                            console.log(game.moves);
+                        }
+                    );
+                    const queueList = JSON.parse(queue);
+                    if (queueList.length > 0) {
+                        const game = queueList.shift();
+                        ls.setItem(agent.localStorageQueue,JSON.stringify(queueList));
+                        //console.log('queue item', queueList[0]);
+                        agent.playQueue = game.moves;
+                    }
+                } else {
+                    agent.playQueue = [];
+                }
+            }            
+
+
             agent.replayValues = [];
-            if (first) agent.incrementCount();
+            if (first && agent.playQueue.length === 0) agent.incrementCount();
+            
+
+            
+            
             let move = agent.getMove(agent.moves);
             agent.game.moves.push(move);
-            // console.log('do you want to play a game? ' + move);
+
             agent.subscribers.forEach(
                 (callback) => {
                     callback(move);
@@ -134,6 +239,34 @@ let getAgent = () => {
             d.setTime(d.getTime() + (days*24*60*60*1000));
             var expires = "expires="+ d.toUTCString();
             document.cookie = "agentrunning=false" + ";" + expires + ";path=/";
+        },
+        saveHistory: (win) => {
+            console.log('save history!!!');
+            let game = { 
+                result: win, 
+                moves: agent.game.moves 
+            };
+
+            const ls = window.localStorage;
+            let gameString = ls.getItem(agent.localStorageResults);
+
+            let games = JSON.parse(gameString) || [];
+
+            if (games.length > 20) {
+                //alert('Find Healthiest');
+                let historyString = ls.getItem(agent.localStorageHistory);
+                let history = JSON.parse(historyString) || [];
+                history.push(games);
+                ls.setItem(agent.localStorageHistory, JSON.stringify(history));
+
+                games = [];
+
+            }
+
+            games.push(game);
+
+            ls.setItem(agent.localStorageResults, JSON.stringify(games));
+
         }
     }
     return agent;

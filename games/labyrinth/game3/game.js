@@ -73,7 +73,7 @@
                 subscriptions.push(callback);
             }
             api.reset = () => {
-                document.location.reload();
+               document.location.reload();
             }
             return api;
         }
