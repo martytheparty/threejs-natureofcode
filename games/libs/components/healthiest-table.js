@@ -9,7 +9,7 @@ class HealthiestTable extends HTMLElement {
     subHeading = document.createElement('h3');
     queuedGames = document.createElement('div');
     pq = [];
-    queueName = "pQueue3";
+    queueName = "pQueue4";
     eventListener;
 
     constructor() {
