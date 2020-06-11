@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <title>Marty The Party's Three D - Labyrinth Game</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="../../css/game.css">
+        <script src="../../libs/components/eight-btn-control.js"></script>
+    </head>
+    <body id="body">
+        <div class="preloader">
+            <img src="../../images/loader.svg" alt="spinner">
+        </div>
+
+        <div id="game" class="game">
+            <div class="item"></div>
+            <div class="item main">
+                <table style="margin: auto;">
+                    <tr>
+                        <td colspan="3">
+                            <div id="moves"></div>
+                            <div id="status" class="status">PLAYING</div>
+                            <div id="agent" class="agent">
+                                <div onclick="toggleAgent()">AGENT <span id='agent-state'></span></div onclick="showWins()">
+                                <div onclick="showWins()">WINS <span id='agent-wins'></span></div>
+                                <div id='agent-wins-list'></div>
+                            </div>
+                            <canvas id="main"></canvas>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><canvas id="front"></canvas></td>
+                        <td><canvas id="left"></canvas></td>
+                        <td><canvas id="ball"></canvas></td>
+                    </tr>
+                </table>
+                <control-8button id="c2d"></control-8button>
+            </div>
+            <div class="item"></div>
+        </div>
+
+        <script src="../sizing.js"></script>
+        <script src="../../libs/three/three.js"></script>
+        <script src="../../libs/cannon/cannon.js"></script>
+        <script src="../../libs/sat/SAT.js"></script>
+        <script src="../../libs/custom/objects.js"></script>
+        <script src="game.js"></script>
+        <script src="agent.js"></script>
+
+        <script>
+            document.getElementById("body").classList.add("loaded");
+            const ctrl = document.getElementById('c2d');
+            const game = document.getElementById('game');
+            let currentState = 'playing';
+            ctrl.subscribe(
+                (state) => {
+                    controls.setPosition(state);
+                }
+            );
+            // ctrl.subscribe(
+            // (state) => {
+            //     game.gameApi.setPosition(state);
+            // }
+            // );
+            // game.gameApi.addSubscription(
+            //     (result) => {
+            //         if (result != currentState) {
+            //             currentState = result;
+            //             document.getElementById('status').innerHTML = result + ' [click to restart]';
+            //         }
+            //     } 
+            // );
+            // document.getElementById("status").onclick = () => {
+            //     game.gameApi.reset();
+            // }
+
+            // const agent = getAgent();
+            // agent.register(
+            //     (move) => {
+            //         if(currentState !== 'playing') {
+            //             if (currentState === 'win') {
+            //                 agent.winHandler();
+            //             }
+
+            //             game.gameApi.reset();
+            //         } else {
+            //             ctrl.aiHandler(move);
+            //         }
+
+            //     }
+            // );
+
+            // let agentStatus = document.getElementById('agent-state');
+            // let agentWins = document.getElementById('agent-wins');
+
+ 
+            //agentStatus.innerHTML = 'Off';
+
+            //console.log('WINNING GAME...');
+            // agentWins.innerHTML = `${agent.getWinningGames().length} of ${agent.getWinningGames().count}`;
+            //console.log(agent.getWinningGames());
+            // let showWins = () => {
+            //     const winDiv = document.getElementById('agent-wins-list');
+            //     winDiv.innerHTML = '';
+            //     agent.getWinningGames().forEach(
+            //         (game) => {
+            //             let ele = document.createElement('div');
+            //             const movesEle = document.getElementById("moves");
+                        
+            //             ele.innerHTML = game.moves.length + ' moves';
+            //             ele.onclick = () => {
+            //                 movesEle.innerHTML = '';
+            //                 movesEle.style = 'display:block';
+            //                 game.moves.forEach(
+            //                     (move) => {
+            //                         movesEle.innerHTML = movesEle.innerHTML + move + '<br>';
+            //                     }
+            //                 );
+            //                 const playEle = document.createElement('div');
+            //                 playEle.style = 'cursor:pointer';
+            //                 playEle.onclick = () => {
+            //                     agent.replayValues = game.moves;
+            //                     agent.replay();
+            //                 }
+            //                 playEle.innerHTML = 'play';
+            //                 movesEle.append(playEle);
+            //             };
+            //             //movesEle.innerHTML = movesEle.innerHTML + '<span>play</span>'
+            //             winDiv.append(ele);
+            //         }
+            //     );
+            // };
+            // let toggleAgent = () => {
+            //     if (agent.isRunning()) {
+            //         agent.stopRunning();                    
+            //         agentStatus.innerHTML = 'Off';
+            //     } else {
+            //         agent.startRunning();
+            //         agent.play(true);
+            //         agentStatus.innerHTML = 'On';
+            //     }
+            // }
+
+            // if (agent.isRunning()) {
+            //     agentStatus.innerHTML = 'On';
+            //     agent.startRunning();
+            //     agent.play(true);
+            // } else {
+            //     agentStatus.innerHTML = 'Off';
+            // }
+
+
+        </script>
+
+    </body>
+</html>
