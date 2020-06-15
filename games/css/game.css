@@ -75,6 +75,16 @@ body {
     text-align: left;
   }
 
+  .results {
+    position: absolute;
+    color: #DDDDDD;
+    z-index: 2;
+    top: 30px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+
   #moves {
     position: absolute;
     z-index: 10;

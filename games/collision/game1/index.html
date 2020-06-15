@@ -20,11 +20,7 @@
                         <td colspan="3">
                             <div id="moves"></div>
                             <div id="status" class="status">PLAYING</div>
-                            <div id="agent" class="agent">
-                                <div onclick="toggleAgent()">AGENT <span id='agent-state'></span></div onclick="showWins()">
-                                <div onclick="showWins()">WINS <span id='agent-wins'></span></div>
-                                <div id='agent-wins-list'></div>
-                            </div>
+                            <div id="results" class="results">Results:</div>
                             <canvas id="main"></canvas>
                         </td>
                     </tr>
@@ -51,12 +47,57 @@
             document.getElementById("body").classList.add("loaded");
             const ctrl = document.getElementById('c2d');
             const game = document.getElementById('game');
+            const status = document.getElementById('status');
+            const results = document.getElementById('results');
             let currentState = 'playing';
             ctrl.subscribe(
                 (state) => {
                     controls.setPosition(state);
                 }
             );
+
+            const statusUpdate = () => {
+                // status.innerHTML = 'aaaaa';
+                // console.log('update', getGameData());
+                let data = getGameData();
+
+                let completedCubesCount = 0;
+
+                data.physics.goals.cubes.forEach(
+                    (cube) => {
+                        if (cube.cannonInstance.position.z < -10) {
+                            completedCubesCount++;
+                        }
+                    }
+                );
+
+                let completedSpheresCount = 0;
+
+                data.physics.goals.spheres.forEach(
+                    (sphere) => {
+                        if (sphere.cannonInstance.position.z < -10) {
+                            completedSpheresCount++;
+                        }
+                    }
+                );
+
+                status.innerHTML = "Totals: " + data.physics.goals.cubes.length + " walls & " +  data.physics.goals.spheres.length + ' balls.';
+                results.innerHTML = "Results: <br>" + completedCubesCount + "/" + data.physics.goals.cubes.length + " walls completes"  + completedSpheresCount + "/" + data.physics.goals.spheres.length + " balls completes";
+            
+                if (data.physics.goals.cubes.length === completedCubesCount && data.physics.goals.spheres.length === completedSpheresCount) {
+                    alert('game completed');
+                    clearInterval(interval);
+                    controls.reset();
+                    interval = window.setInterval( statusUpdate, 500);
+                }
+
+            }
+
+
+            let interval = window.setInterval( statusUpdate, 500);
+
+            
+
             // ctrl.subscribe(
             // (state) => {
             //     game.gameApi.setPosition(state);

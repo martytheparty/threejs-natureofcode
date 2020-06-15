@@ -1,4 +1,5 @@
 let controls;
+let getGameData;
 
 (() => {
     function viewSetup() {
@@ -207,8 +208,6 @@ let controls;
                            if (cube.cannonInstance.position) {
                                cube.threeMesh.forEach((mesh) => {
                                    mesh.position.set(cube.cannonInstance.position.x, cube.cannonInstance.position.y, cube.cannonInstance.position.z);
-
-
                                    mesh.quaternion.x = cube.cannonInstance.quaternion.x;
                                    mesh.quaternion.y = cube.cannonInstance.quaternion.y;
                                    mesh.quaternion.z = cube.cannonInstance.quaternion.z;
@@ -346,6 +345,11 @@ let controls;
 
     function controlsSetup() {
         function init() {
+            game.controls.reset = () => {
+                game = JSON.parse(initStateString);
+                viewSetup();
+                physicsSetup();
+            }
             game.controls.setPosition = (pos) => {
                 const offset = .01;
                 const platform = game.physics.platform.cannonInstance;
@@ -399,7 +403,7 @@ let controls;
     /*
      * state of the game 
      */
-    const game = {
+    let game = {
         controls: {
             setPosition: undefined
         },
@@ -642,9 +646,14 @@ let controls;
         }
     }
 
+    const initStateString = JSON.stringify(game);
+
     viewSetup();
     physicsSetup();
     controlsSetup();
     controls = game.controls;
+    getGameData = () => {
+        return game;
+    }
   })()
 
