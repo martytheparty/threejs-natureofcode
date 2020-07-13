@@ -8,6 +8,7 @@ let getGameData;
         function init() {
             positions = Object.keys(game.views);
             initializeViews();
+            addWalls();
             addPlatforms();
             addSpheres();
             addGoals();
@@ -36,6 +37,82 @@ let getGameData;
             return view;
         }
 
+        function addWalls() {
+            
+            positions.forEach(
+                (position) => { 
+                    console.log('add wall to ', position); 
+                    game.walls.forEach(
+                        (wall) => {
+                            console.log(wall);
+                            // var geometry = new THREE.PlaneGeometry( 0, 0, 1000 );
+                            // var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+                            // var plane = new THREE.Mesh( geometry, material );
+                            // game.views[position].view.scene.add(plane);
+                            //const position = platform.position;
+                            //const geometry = new THREE.BoxGeometry(2000, 2000, 2000);
+                            //const material = new THREE.MeshBasicMaterial({ color: wall.color });
+                            //material.sides = THREE.BackSide;
+                            //const mesh1 = new THREE.Mesh(geometry, material);
+                            //mesh1.position.set(wall.x, wall.y, wall.z);
+                            //game.views[position].view.scene.add(mesh1);
+
+
+                            var geometry = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                            var plane = new THREE.Mesh( geometry, material );
+
+                            plane.rotation.y = Math.PI / 2;
+                            plane.position.set(5000, 0, 0);
+                            game.views[position].view.scene.add( plane );
+
+                            var geometry1 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material1 = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+                            var plane1 = new THREE.Mesh( geometry1, material1 );
+
+                            plane1.rotation.y = Math.PI / 2;
+                            plane1.position.set(-5000, 0, 0);
+                            game.views[position].view.scene.add( plane1 );
+
+                            var geometry2 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material2 = new THREE.MeshBasicMaterial( {color: 0x00ff00, side: THREE.DoubleSide} );
+                            var plane2 = new THREE.Mesh( geometry2, material2 );
+
+                            plane2.rotation.x = Math.PI / 2;
+                            plane2.position.set(0, 5000, 0);
+                            game.views[position].view.scene.add( plane2 );                            
+
+                            var geometry3 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material3 = new THREE.MeshBasicMaterial( {color: 0x00ffff, side: THREE.DoubleSide} );
+                            var plane3 = new THREE.Mesh( geometry3, material3 );
+
+                            plane3.rotation.x = Math.PI / 2;
+                            plane3.position.set(0, 5000, 0);
+                            game.views[position].view.scene.add( plane3 );              
+                            
+                            var geometry4 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material4 = new THREE.MeshBasicMaterial( {color: 0x00ff00, side: THREE.DoubleSide} );
+                            var plane4 = new THREE.Mesh( geometry4, material4 );
+
+                            plane4.rotation.x = Math.PI / 2;
+                            plane4.position.set(0, -5000, 0);
+                            game.views[position].view.scene.add( plane4 );
+
+                            var geometry5 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
+                            var material5 = new THREE.MeshBasicMaterial( {color: 0xcccccc, side: THREE.DoubleSide} );
+                            var plane5 = new THREE.Mesh( geometry5, material5 );
+
+                            //plane5.rotation.x = 0;
+                            plane5.position.set(0, 0, -5000);
+                            game.views[position].view.scene.add( plane5 );
+
+                        }
+                    );
+
+                }
+            );
+        } 
+
         function addPlatforms() {
             positions.forEach(
                 (position) => { game.views[position].platform = addPlatform(position); }
@@ -58,6 +135,12 @@ let getGameData;
                     platform1.geometry = geometry;
                     platform1.material = material;
                     platform1.mesh = mesh1;
+
+                    const scene = game.views[viewKey].view.scene;
+                    const mesh = mesh1;
+                    const threeItems = {scene, mesh};
+                    platform.three.push(threeItems);
+
                     game.views[viewKey].view.scene.add(mesh1);
                 }
             );
@@ -215,6 +298,9 @@ let getGameData;
                     } else if (position == 'front') {
                         // camera.position.set(eyeX, eyeY, eyeZ + 200);
                         camera.position.set(thirdX, thirdY, thirdZ);
+                    } else if (position == 'left') {
+                        // camera.position.set(eyeX, eyeY, eyeZ + 200);
+                        camera.position.set(thirdX + 400, thirdY, thirdZ);
                     } else {
                         camera.position.set(camera.position.x, camera.position.y, eyeZ + 15);
                     }
@@ -394,6 +480,27 @@ let getGameData;
             game.world.step(1 / 30);
         }
         setInterval(calculatePhysics, 10);
+ 
+ 
+        const checkPlatforms = () => {
+            //console.log('set platforms', game.physics.platform[0].three);
+            game.physics.platform.forEach(
+                (platform) => {
+                    if (!platform.de) {
+                        platform.three.forEach(
+                            (three) => {
+                                if (platform.position.z > game.physics.sphere.cannonInstance.position.z) {
+                                    platform.deleted = true;
+                                    three.scene.remove(three.mesh);
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+        checkPlatforms();
+        setInterval(checkPlatforms, 500);
     }
 
     function controlsSetup() {
@@ -424,11 +531,10 @@ let getGameData;
                 const sphere = game.physics.sphere.cannonInstance;
 
                 if (pos) {
-                    console.log(pos);
 
 
                     if (rotate) {
-                        const speedFactor = .2;
+                        const speedFactor = .25;
                         sphere.angularVelocity.set(
                             speedFactor * game.physics.sphere.eyeball.yOffset * -1,
                             speedFactor * game.physics.sphere.eyeball.xOffset,
@@ -490,254 +596,18 @@ let getGameData;
      * state of the game 
      */
     let game = {
+        walls: [
+            {
+                color: 0x00FF00
+            }
+        ],
         controls: {
-            rolling: false,
             setPosition: undefined
         },
         world: {},
         physics: {
             gravity: { x: 0, y: 0, z: -100 },
-            barriers: [{
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -130,
-                y: -130,
-                z: 40,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -130,
-                y: 130,
-                z: 40,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: 130,
-                y: -130,
-                z: 40,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: 130,
-                y: 130,
-                z: 40,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -320,
-                y: 30,
-                z: -165,
-                color: 0x0000FF,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -320,
-                y: -30,
-                z: -150,
-                color: 0x0000FF,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -320,
-                y: -100,
-                z: -150,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -320,
-                y: 100,
-                z: -150,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -620,
-                y: 120,
-                z: -280,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -670,
-                y: -120,
-                z: -280,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -725,
-                y: 0,
-                z: -280,
-                color: 0xFFFF00,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -800,
-                y: 120,
-                z: -280,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1000,
-                y: 70,
-                z: -340,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1000,
-                y: -90,
-                z: -340,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1100,
-                y: 70,
-                z: -340,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1100,
-                y: 0,
-                z: -340,
-                color: 0xFFFF00,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1400,
-                y: 0,
-                z: -480,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1400,
-                y: -120,
-                z: -480,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1400,
-                y: 120,
-                z: -480,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }, {
-                material: new CANNON.Material('material'),
-                mass: 0,
-                width: 25,
-                depth: 25,
-                height: 25,
-                x: -1320,
-                y: -120,
-                z: -480,
-                color: 0xFF0000,
-                cannonInstance: {},
-                threeMesh: [],
-            }],
+            barriers: [],
             sphere: {
                 material: new CANNON.Material('material'),
                 mass: 15000,
@@ -765,119 +635,32 @@ let getGameData;
             platform: [{
                 dimensions: { width: 150, height: 150, depth: 15 },
                 position: { x: 0, y: 0, z: 0 },
-                color: 0x555555
+                color: 0x555555,
+                three: {}
             }, {
                 dimensions: { width: 150, height: 150, depth: 15 },
                 position: { x: -350, y: 0, z: -160 },
-                color: 0x555555
+                color: 0x555555,
+                three: []
             }, {
                 dimensions: { width: 150, height: 150, depth: 15 },
                 position: { x: -700, y: 0, z: -300 },
-                color: 0x555555
+                color: 0x555555,
+                three: []
             }, {
                 dimensions: { width: 150, height: 150, depth: 15 },
                 position: { x: -1050, y: 0, z: -380 },
-                color: 0x555555
+                color: 0x555555,
+                three: []
             }, {
                 dimensions: { width: 150, height: 150, depth: 15 },
                 position: { x: -1400, y: 0, z: -500 },
-                color: 0x555555
+                color: 0x555555,
+                three: []
             }],
             goals: {
-                cubes: [{
-                    material: new CANNON.Material('material'),
-                    mass: 50,
-                    width: 100,
-                    depth: 35,
-                    height: 10,
-                    x: 0,
-                    y: -130,
-                    z: 35,
-                    color: 0x00FF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 50,
-                    width: 100,
-                    depth: 35,
-                    height: 10,
-                    x: 0,
-                    y: 130,
-                    z: 35,
-                    color: 0x00FF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 50,
-                    width: 10,
-                    depth: 35,
-                    height: 100,
-                    x: 130,
-                    y: 0,
-                    z: 35,
-                    color: 0x00FF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }],
-                spheres: [{
-                    material: new CANNON.Material('material'),
-                    mass: 100,
-                    radius: 20,
-                    sides: 32,
-                    x: 0,
-                    y: -90,
-                    z: 45,
-                    color: 0xFFFF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 100,
-                    radius: 20,
-                    sides: 32,
-                    x: 30,
-                    y: 30,
-                    z: 45,
-                    color: 0xFFFF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 100,
-                    radius: 20,
-                    sides: 32,
-                    x: 0,
-                    y: 55,
-                    z: 55,
-                    color: 0xFFFF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 100,
-                    radius: 20,
-                    sides: 32,
-                    x: 30,
-                    y: -30,
-                    z: 45,
-                    color: 0xFFFF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }, {
-                    material: new CANNON.Material('material'),
-                    mass: 100,
-                    radius: 20,
-                    sides: 32,
-                    x: -30,
-                    y: 30,
-                    z: 45,
-                    color: 0xFFFF00,
-                    cannonInstance: {},
-                    threeMesh: [],
-                }
-                ]
+                cubes: [],
+                spheres: []
             }
         },
         views: {
@@ -889,7 +672,7 @@ let getGameData;
                     spheres: [],
                 },
                 meta: {
-                    camera: { x: 0, y: 0, z: 350 },
+                    camera: { x: 0, y: 0, z: 500 },
                     lookAt: { x: 0, y: 0, z: 0 }
                 }
             },
@@ -901,7 +684,7 @@ let getGameData;
                     spheres: [],
                 },
                 meta: {
-                    camera: { x: 750, y: 0, z: 20 },
+                    camera: { x: 400, y: 0, z: 20 },
                     lookAt: { x: 0, y: 0, z: 0 }
                 }
             },
@@ -931,6 +714,39 @@ let getGameData;
                 }
             }
         }
+    }
+
+    game.physics.platform = [];
+
+    const seed = 1;
+    const simplex = new SimplexNoise(seed);
+
+    for(let i = 0; i < 20; i++) {
+        let color = 16777215 - i * 4000;
+        if (i === 19) {
+            color = 255;
+        }
+
+        let value2d = simplex.noise2D(0, i/10);
+        //console.log('value', value2d*200);
+        
+        const val = value2d*100;
+        
+        //console.log(i, val);
+
+        const x = i * 200 * -1;
+        const y = i * val;
+        const z = i * 150 * -1;
+        const platform = {
+
+
+            dimensions: { width: 150, height: 150, depth: 15 },
+            position: { x, y, z },
+            color: color,
+            three: []
+        };
+
+        game.physics.platform.push(platform);
     }
 
     const initStateString = JSON.stringify(game);

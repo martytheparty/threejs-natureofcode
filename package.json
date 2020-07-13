@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "perlin-simplex": "0.0.3",
+    "simplex-noise": "^2.4.0",
     "three-orbitcontrols": "^2.102.1"
   }
 }
