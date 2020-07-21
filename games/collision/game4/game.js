@@ -41,10 +41,10 @@ let getGameData;
             
             positions.forEach(
                 (position) => { 
-                    console.log('add wall to ', position); 
+                    //console.log('add wall to ', position); 
                     game.walls.forEach(
                         (wall) => {
-                            console.log(wall);
+                            //console.log(wall);
                             // var geometry = new THREE.PlaneGeometry( 0, 0, 1000 );
                             // var material = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
                             // var plane = new THREE.Mesh( geometry, material );
@@ -59,7 +59,7 @@ let getGameData;
 
 
                             var geometry = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
-                            var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                            var material = new THREE.MeshBasicMaterial( {color: 0xFF4500, side: THREE.DoubleSide} );
                             var plane = new THREE.Mesh( geometry, material );
 
                             plane.rotation.y = Math.PI / 2;
@@ -67,7 +67,7 @@ let getGameData;
                             game.views[position].view.scene.add( plane );
 
                             var geometry1 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
-                            var material1 = new THREE.MeshBasicMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+                            var material1 = new THREE.MeshBasicMaterial( {color: 0x000000, side: THREE.DoubleSide} );
                             var plane1 = new THREE.Mesh( geometry1, material1 );
 
                             plane1.rotation.y = Math.PI / 2;
@@ -83,7 +83,7 @@ let getGameData;
                             game.views[position].view.scene.add( plane2 );                            
 
                             var geometry3 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
-                            var material3 = new THREE.MeshBasicMaterial( {color: 0x00ffff, side: THREE.DoubleSide} );
+                            var material3 = new THREE.MeshBasicMaterial( {color: 0xe6dcff, side: THREE.DoubleSide} );
                             var plane3 = new THREE.Mesh( geometry3, material3 );
 
                             plane3.rotation.x = Math.PI / 2;
@@ -99,7 +99,7 @@ let getGameData;
                             game.views[position].view.scene.add( plane4 );
 
                             var geometry5 = new THREE.PlaneGeometry( 10000, 10000, 1, 1 );
-                            var material5 = new THREE.MeshBasicMaterial( {color: 0xcccccc, side: THREE.DoubleSide} );
+                            var material5 = new THREE.MeshBasicMaterial( {color: 0x0077be, side: THREE.DoubleSide} );
                             var plane5 = new THREE.Mesh( geometry5, material5 );
 
                             //plane5.rotation.x = 0;
@@ -632,32 +632,7 @@ let getGameData;
                     zOffset: 15
                 }
             },
-            platform: [{
-                dimensions: { width: 150, height: 150, depth: 15 },
-                position: { x: 0, y: 0, z: 0 },
-                color: 0x555555,
-                three: {}
-            }, {
-                dimensions: { width: 150, height: 150, depth: 15 },
-                position: { x: -350, y: 0, z: -160 },
-                color: 0x555555,
-                three: []
-            }, {
-                dimensions: { width: 150, height: 150, depth: 15 },
-                position: { x: -700, y: 0, z: -300 },
-                color: 0x555555,
-                three: []
-            }, {
-                dimensions: { width: 150, height: 150, depth: 15 },
-                position: { x: -1050, y: 0, z: -380 },
-                color: 0x555555,
-                three: []
-            }, {
-                dimensions: { width: 150, height: 150, depth: 15 },
-                position: { x: -1400, y: 0, z: -500 },
-                color: 0x555555,
-                three: []
-            }],
+            platform: [],
             goals: {
                 cubes: [],
                 spheres: []
@@ -725,9 +700,14 @@ let getGameData;
         let color = 16777215 - i * 4000;
         if (i === 19) {
             color = 255;
+        } else {
+            color = 8740418;
         }
 
+
+
         let value2d = simplex.noise2D(0, i/10);
+        let valueSphereY = simplex.noise2D(1, i/10);
         //console.log('value', value2d*200);
         
         const val = value2d*100;
@@ -746,7 +726,23 @@ let getGameData;
             three: []
         };
 
+       // console.log('sphere y', valueSphereY * 200 );
+
+        const sphere1 = {
+            radius: 25,
+            color: 0xFFFF00,
+            x: x, 
+            y: y + valueSphereY*150, 
+            z: z + 50,
+            mass: 1000,
+            sides: 32,
+            threeMesh: [],
+            cannonInstance: {}
+        };
+        //}
+
         game.physics.platform.push(platform);
+        game.physics.goals.spheres.push(sphere1);
     }
 
     const initStateString = JSON.stringify(game);
