@@ -160,6 +160,9 @@ class Control10B extends HTMLElement {
             this.currentState = this.currentState + 'f';
         }
 
+        if(this.keys['s']) {
+            this.currentState = this.currentState + 's';
+        }
 
         this.updateState();
         this.publish();
