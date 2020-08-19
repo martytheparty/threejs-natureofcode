@@ -26,9 +26,9 @@ let getGameData;
         function createView(eleId) {
             const metaData = game.views[eleId].meta;
             const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1 ); // soft white light
-            const spotLight = new THREE.SpotLight(0xFFFFFF);
-            spotLight.castShadow = true;
-            spotLight.position.set( 0, 0, 1000 );
+            const spotLight = new THREE.SpotLight(0xFFCCCC);
+            //spotLight.castShadow = true;
+            spotLight.position.set( 0, 0, 130 );
             spotLight.castShadow = true;
 
             let view = {};
@@ -44,7 +44,7 @@ let getGameData;
                 .load(urls);
             view.el = document.getElementById(eleId);
             view.scene = new THREE.Scene();
-            view.scene.add( ambientLight );
+            //view.scene.add( ambientLight );
             view.scene.add( spotLight );
             //view.scene.background = 0xFFFFFF;
                 const loader = new THREE.TextureLoader();
@@ -142,7 +142,7 @@ let getGameData;
                     // var envMap = new THREE.TextureLoader().load('skybox-front.png');
                     const loader = new THREE.TextureLoader();
                     const roughTexture = loader.load('scratch.jpg');
-                    const shinyTexture = loader.load('neg-x.png');
+                    const shinyTexture = loader.load('concrete.JPG');
                     
 
                     const material1 = new THREE.MeshStandardMaterial( {
@@ -162,7 +162,7 @@ let getGameData;
 
                     const mesh1 = new THREE.Mesh(geometry, material1);
                     mesh1.position.set(position.x, position.y, position.z);
-                    mesh1.castShadow = true;
+                    // mesh1.castShadow = true;
                     mesh1.receiveShadow = true;
                     platform1.geometry = geometry;
                     platform1.material = material;
