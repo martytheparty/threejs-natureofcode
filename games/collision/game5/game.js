@@ -192,9 +192,36 @@ let getGameData;
             const sphereGroup = new THREE.Group();
             const physics = game.physics;
             const metaData = game.views[viewKey].meta;
+
+
+
             const sphereGeometry = new THREE.SphereGeometry(physics.sphere.radius * 1, physics.sphere.sides, physics.sphere.sides);
             const sphereMaterial = new THREE.MeshBasicMaterial({ color: physics.sphere.color });
-            const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            let mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
+            const loader = new THREE.TextureLoader();
+            const roughTexture = loader.load('scratch.jpg');
+            const shinyTexture = loader.load('concrete.JPG');
+            
+
+            const material1 = new THREE.MeshStandardMaterial( {
+
+                 color: 0xffffff,
+            
+                 roughness: .4,
+                 metalness: 1,
+            
+                 roughnessMap: shinyTexture,
+                 metalnessMap: shinyTexture,
+            
+            //     envMap: envMap, // important -- especially for metals!
+            //     envMapIntensity: envMapIntensity
+            
+             } );
+
+             mesh = new THREE.Mesh(sphereGeometry, material1);
+
+
             mesh.castShadow = true;
             sphereGroup.add(mesh);
             const nubPosition = physics.sphere.radius - 2;
