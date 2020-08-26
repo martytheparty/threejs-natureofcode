@@ -26,7 +26,7 @@ let getGameData;
         function createView(eleId) {
             const metaData = game.views[eleId].meta;
             const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 1 ); // soft white light
-            const spotLight = new THREE.SpotLight(0xFFCCCC);
+            const spotLight = new THREE.SpotLight(0xFFFFFF);
             //spotLight.castShadow = true;
             spotLight.position.set( 0, 0, 130 );
             spotLight.castShadow = true;
@@ -134,6 +134,13 @@ let getGameData;
 
             physics.platform.forEach(
                 (platform) => {
+                    // add a light above the platform
+                    const pointLight = new THREE.PointLight(0x00FF00, 1);
+                    //spotLight.castShadow = true;
+                    pointLight.position.set( platform.position.x, platform.position.y, platform.position.z + 10 );  
+                    //game.views[viewKey].view.scene.add(pointLight);                  
+
+
                     const platform1 = {};
                     const dimensions = platform.dimensions;
                     const position = platform.position;
@@ -141,7 +148,7 @@ let getGameData;
                     const material = new THREE.MeshBasicMaterial({ color: platform.color });
                     // var envMap = new THREE.TextureLoader().load('skybox-front.png');
                     const loader = new THREE.TextureLoader();
-                    const roughTexture = loader.load('scratch.jpg');
+                    const roughTexture = loader.load('checkerboard.jpg');
                     const shinyTexture = loader.load('concrete.JPG');
                     
 
@@ -152,7 +159,7 @@ let getGameData;
                          roughness: .4,
                          metalness: 1,
                     
-                         roughnessMap: shinyTexture,
+                         roughnessMap: roughTexture,
                          metalnessMap: shinyTexture,
                     
                     //     envMap: envMap, // important -- especially for metals!
@@ -219,9 +226,7 @@ let getGameData;
             
              } );
 
-             mesh = new THREE.Mesh(sphereGeometry, material1);
-
-
+            mesh = new THREE.Mesh(sphereGeometry, material1);
             mesh.castShadow = true;
             sphereGroup.add(mesh);
             const nubPosition = physics.sphere.radius - 2;
@@ -304,7 +309,23 @@ let getGameData;
                 (goal) => {
                     const sphereGeometry = new THREE.SphereGeometry(goal.radius * 1, goal.sides, goal.sides);
                     const sphereMaterial = new THREE.MeshBasicMaterial({ color: goal.color });
-                    const mesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                    const loader = new THREE.TextureLoader();
+                    const roughTexture = loader.load('scratch.jpg');
+                    const shinyTexture = loader.load('turtle-shell.png');
+                    
+                    const material1 = new THREE.MeshStandardMaterial( {
+                         color: 0xffffff,
+                    
+                         roughness: .01,
+                         metalness: 1,
+                    
+                         roughnessMap: shinyTexture,
+                         metalnessMap: shinyTexture,                    
+                    } );
+                    const mesh = new THREE.Mesh(sphereGeometry, material1);
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+
                     mesh.position.set(goal.x, goal.y, goal.z);
                     goal.threeMesh.push(mesh);
                     game.views[viewKey].goals.spheres.push(mesh);
@@ -653,7 +674,7 @@ let getGameData;
 
                     if (pos.includes('s')) {
                         game.physics.sphere.cannonInstance.velocity.z = 300;
-                        console.log('Apply Force ', game.physics.sphere);
+                        // console.log('Apply Force ', game.physics.sphere);
                     }
                 }
 
