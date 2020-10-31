@@ -42,7 +42,7 @@ let getGameData;
             ];
             let sceneCube = new THREE.CubeTextureLoader()
                 .load(urls);
-            view.el = document.getElementById(eleId);
+            view.el = document.getElementById(eleId); 
             view.scene = new THREE.Scene();
             //view.scene.add( ambientLight );
             view.scene.add( spotLight );
