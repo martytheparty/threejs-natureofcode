@@ -70,7 +70,8 @@ interface Light {
     height?: number,
     lookAt?: Position,
     helper?: boolean,
-    helperSize?: number
+    helperSize?: number,
+    castShadow?: boolean
 }
 
 interface PlatformDesc {
@@ -78,6 +79,7 @@ interface PlatformDesc {
     dimensions: Dimensions,
     rotateAngle: Rotation,
     material: Material,
+    receiveShadow: boolean,
 }
 
 interface Position {
@@ -141,43 +143,74 @@ export function createWorld() {
 
 const planes: Plane[] = [];
 
-const spheres: SphereDesc[] = [];
+const spheres: SphereDesc[] = [
+    {
+        radius:1.3,
+        position: {x: 0, y: 0, z: 0},
+        material: {
+            type: 'Lambert',
+            color: 0x000000
+        },
+        widthSegments: 32,
+        heightSegments: 32,
+        rotateAngle: {x: 0, y: 0, z: 0},
 
-const platforms: PlatformDesc[] = [];
-
-const width = 40;
-const height = 40;
-
-for(let i = 0; i < width; i++) {
-    for (let j = 0; j < height; j++) {
-        let color = 0xFFFF00;
-        if ((j + i) % 2) {
-            color = 0xFF0000;
-        }
-        spheres.push(
-            {
-                radius: .7,
-                position: { x: 0, y: (i - width/2), z: (j - height/2)},
-                rotateAngle: {x: 0, y: 0, z: 0},
-                material: {
-                    type: 'Lambert',
-                    color
-                },
-                widthSegments: 8,
-                heightSegments: 8,
-            }
-        );
     }
-}
-console.log(spheres);
+];
+
+const platforms: PlatformDesc[] = [
+    {
+        dimensions: { width: 6, height: 1, depth: 8},
+        position: { x: 0, y: 0, z: -2.5},
+        rotateAngle: {x: 0, y: 0, z: 0},
+        receiveShadow: true,
+        material: {
+            type: 'Lambert',
+            color: 0xFFFFFF
+        },
+    },{
+        dimensions: { width: 2, height: 2, depth: 2},
+        position: { x: 0, y: 0, z: 0},
+        rotateAngle: {x: 0, y: 0, z: 0},
+        receiveShadow: true,
+        material: {
+            type: 'Lambert',
+            color: 0x000000
+        },
+    }
+];
 
 const lights: Light[] = [
     {
-        type: "Ambient",
+        type: "Point",
         color: 0xFFFFFF,
-        position: {x: 0, y: 0, z:10},
-        intensity: 1
-    }
+        position: {x: 0, y: 0, z:5},
+        intensity: 1,
+    }, 
+    {
+        type: "Point",
+        color: 0xFFFFFF,
+        position: {x: 0, y: 5, z:0},
+        intensity: 1,
+    },
+    {
+        type: "Point",
+        color: 0xFFFFFF,
+        position: {x: 0, y: -5, z:0},
+        intensity: 1,
+    },
+    {
+        type: "Point",
+        color: 0xFFFFFF,
+        position: {x: 5, y: 0, z:0},
+        intensity: 1,
+    },{
+        type: "Point",
+        color: 0xFFFFFF,
+        position: {x: -5, y: 0, z:0},
+        intensity: 1,
+    },
+
 ];
 
 const physicsWorld: Physics = {
@@ -197,7 +230,7 @@ function addScene(world: World) {
                 renderer: {},
                 width: 400,
                 height: 400,
-                position: {x: 8, y: 0, z: 0},
+                position: {x: 2.5, y: 0, z: 0},
                 up: {x: 0, y: 0, z: 1},
                 look: {x: 0, y: 0, z: 0},
                 planes,
@@ -217,7 +250,7 @@ function addScene(world: World) {
                 renderer: {},
                 width: 400,
                 height: 400,
-                position: {x: 40, y: 0, z: 0},
+                position: {x: 0, y: 0, z: 12},
                 up: {x: 0, y: 0, z: 1},
                 look: {x: 0, y: 0, z: 0},
                 planes,
@@ -237,7 +270,7 @@ function addScene(world: World) {
                 renderer: {},
                 width: 400,
                 height: 400,
-                position: {x: 80, y: 0, z: 0},
+                position: {x: 8, y: -6, z: 0},
                 up: {x: 0, y: 0, z: 1},
                 look: {x: 0, y: 0, z: 0},
                 planes,
@@ -257,7 +290,7 @@ function addScene(world: World) {
                 renderer: {},
                 width: 400,
                 height: 400,
-                position: {x: 1000, y: 0, z: 0},
+                position: {x: -8, y: 6, z: 0},
                 up: {x: 0, y: 0, z: 1},
                 look: {x: 0, y: 0, z: 0},
                 planes,
